@@ -9,7 +9,8 @@
 
     {% for p in posts %} <!-- 8. posts(views.py의 Post.objects.all에 해당하는 내용이 다 들어있다)는 blog/views.py에서 'posts'로 제목을 붙인 것이다.-->
         <hr/> <!-- 수평선 -->
-        <h3>{{ p.title }}</h3> <!-- p는 post 하나하나를 뜻한다. p는 blog/models.py에서 str함수에 정의해 놓은대로 나온것이다. 그래서 pk와 title을 보여주는 것으로 되어있다. -->
+        <h3><a href="{{ p.get_absolute_url }}">{{ p.title }}</a></h3> <!-- p는 post 하나하나를 뜻한다. p는 blog/models.py에서 str함수에 정의해 놓은대로 나온것이다. 그래서 pk와 title을 보여주는 것으로 되어있다. -->
+        <!-- 18. p.title을 a태그로 감싸고 이와같이 입력하고 models.py로 이동한다. -->
         <h4>{{ p.created_at }}</h4> <!-- 작성일 -->
         <p>{{ p.content }}</p> <!-- 내용 -->
     {% endfor %} <!-- 8. 위에것 입력후 이렇게 입력한다. blog/views.py로 이동 -->
