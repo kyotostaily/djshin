@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-
+import os #73.이 항목 추가
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -118,9 +118,8 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/' #74.여기에 접근할 수 있게 해 줘라 라고 정의가 되어있다.
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+MEDIA_URL = '/media/' #75.url이 media 라고 오는 경우 media 파일을 가져오라는 거구나 라고 인식
+MEDIA_ROOT = os.path.join(BASE_DIR, '_media') #76.파일이 저장되는 경로를 잡아준다. BASE_DIR 뒤에다가 _media를 붙이면 파일을 저장하겠다는 뜻, blog/models.py로 이동한다.

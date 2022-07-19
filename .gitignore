@@ -130,3 +130,5 @@ dmypy.json
 
 .idea/
 migrations/
+_media/
+#85. 이와같이 _media폴더를 추가시켜서 깃이 관리하지 않게 한다.
