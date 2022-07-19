@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import ListView #32. list를 보여주는 것은 ListView라는 것이 있다. 이것을 상속받아서 확장하면 된다.
+from django.views.generic import ListView, DetailView #32. list를 보여주는 것은 ListView라는 것이 있다. 이것을 상속받아서 확장하면 된다. 40. DeatailView는 하나만 보여주고 싶을 때 사용한다.(Post.objects.get)을 대체할 수 있다.
 from .models import Post #5. Post 라는 것이 blog/models.py에 정의되어 있으므로 임포트한다.
 
 #39. ListView를 확장해서 model을 어떤 모델을 쓸것인지 정의하고(model = Post), ordering을 바꿔주면 된다. 그리고 파일명도 post_list.html로 바꿔준다.
@@ -20,14 +20,20 @@ class PostList(ListView): #38. 리스트를 보여주고 싶으면 이렇게 모
         #}                   #7. 이렇게 입력 후 html.index로 간다.
     #)                       #7. posts의 결과가 index.html에 담긴다.
 
+#42. 주석처리 후 이와같이 입력한다.
 
-def single_post_page(request, pk): #11. 이렇게 함수를 만들고, request와 앞서 blog/urls.py에서 추가 했던 인자 pk를 추가한다.
-    post = Post.objects.get(pk=pk) #12. get(pk=pk) pk가 같은pk인것을 가져와라! pk는 id랑 똑같은 것이다. pk는 필드를 만들지 않아도 models.py에서 자동으로 django가 제공을 한다.
 
-    return render( #13. render는 장고에서 제공하는 기능이다.
-        request,
-        'blog/single_page.html', #14. 16. 이렇게 입력하고 blog/templates/blog 안에 single_page.html을 만든다.
-        {
-            'post': post, #15. 7번의 방법대로 하면서 이름만 다르게 post = post 로 한다.
-        }
-    )
+class PostDetail(DetailView): #43. 이렇게 써놓고 확장한다.
+    model = Post #44. model은 Post다. 입력후 urls.py로 이동한다.
+
+#41. 이것도 주석처리 한다.
+#def single_post_page(request, pk): #11. 이렇게 함수를 만들고, request와 앞서 blog/urls.py에서 추가 했던 인자 pk를 추가한다.
+    #post = Post.objects.get(pk=pk) #12. get(pk=pk) pk가 같은pk인것을 가져와라! pk는 id랑 똑같은 것이다. pk는 필드를 만들지 않아도 models.py에서 자동으로 django가 제공을 한다.
+
+    #return render( #13. render는 장고에서 제공하는 기능이다.
+        #request,
+        #'blog/post_detail.html', #14. 16. 이렇게 입력하고 blog/templates/blog 안에 single_page.html을 만든다.
+        #{
+            #'post': post, #15. 7번의 방법대로 하면서 이름만 다르게 post = post 로 한다.
+        #}
+    #)
