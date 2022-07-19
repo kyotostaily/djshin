@@ -1,4 +1,4 @@
-<!DOCTYPE html> <!-- 4. index.html 까지 만들어서 이렇게 작성하고 blog.views.py로 넘어간다. -->
+<!DOCTYPE html> <!-- 4. post_list.html 까지 만들어서 이렇게 작성하고 blog.views.py로 넘어간다. -->
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -6,8 +6,8 @@
 </head>
 <body>
     <h1>Blog</h1>
-
-    {% for p in posts %} <!-- 8. posts(views.py의 Post.objects.all에 해당하는 내용이 다 들어있다)는 blog/views.py에서 'posts'로 제목을 붙인 것이다.-->
+                         <!-- 36. post_list로 수정하고 views.py로 이동.(모델명_리스트-->
+    {% for p in post_list %} <!-- 8. posts(views.py의 Post.objects.all에 해당하는 내용이 다 들어있다)는 blog/views.py에서 'posts'로 제목을 붙인 것이다.-->
         <hr/> <!-- 수평선 -->
         <h3><a href="{{ p.get_absolute_url }}">{{ p.title }}</a></h3> <!-- p는 post 하나하나를 뜻한다. p는 blog/models.py에서 str함수에 정의해 놓은대로 나온것이다. 그래서 pk와 title을 보여주는 것으로 되어있다. -->
         <!-- 18. p.title을 a태그로 감싸고 이와같이 입력하고 models.py로 이동한다. -->
