@@ -84,6 +84,11 @@
                     {% for p in post_list %} <!-- 52. 이렇게 작성한다 -->
                     <!-- Blog Post -->
                     <div class="card mb-4">
+                        {% if p.head_image %} <!-- 88. 이것부터 endif 까지 이와같이 입력한다(head_image가 있을때 이것을 보여준다) -->
+                            <img class="card-img-top" src="{{ p.head_image.url }}" alt="{{ p.title }}">
+                        {% else %}
+                            <img class="card-img-top" src="https://picsum.photos/seed/{{ p.id }}/600/200" alt="{{ p.title }}"> <!-- 89. else문 아래에 로럼 픽섬을 사용해서 가져와서 이와같이 추가한다.(아이디 속성을 seed/{{ p.id }}형식으로 추가하여 그림을 고정 이후 blog/post_detail.html로 이동) -->
+                        {% endif %}
                         <img class="card-img-top" src="{{ p.head_image.url }}" alt="{{ p.title }}"> <!-- 84.이와같이 입력하고 일단 admin에 가서 이미지 없는 게시글에 이미지를 저장시킨다. 그리고 _media폴더가 깃에서 관리되면 안되므로 .gitignore로 이동한다. -->
                         <div class="card-body">
                         <h2 class="card-title">{{ p.title }}</h2> <!-- 54. {{ p.title }}로 입력  -->

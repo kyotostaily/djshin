@@ -73,8 +73,12 @@
             <hr>
 
             <!-- Preview Image -->
-            <img class="img-fluid rounded" src="{{ post.head_image.url }}" alt="{{ post.title }}"> <!-- 86. post_list의 87번째 내용을 가져와서 덮어 씌운 후에 p를 post로 바꿔준다. image-fluid는 꽉차게 보여주는 것, rounded는 모서리가 둥글게 되는것. 이제 models.py로 이동한다.-->
-
+            {% if post.head_image %} <!-- 90. post_list의 내용을 복사해와서 기존의 86번순서의 것에 덮어씌운 후 p를 post로 바꿔준다. 그러면 이미지가 있든 없든 문제가 없다. -->
+                <img class="img-fluid rounded" src="{{ post.head_image.url }}" alt="{{ post.title }}">
+            {% else %}
+                <img class="card-img-top" src="https://picsum.photos/seed/{{ post.id }}/600/200" alt="{{ p.title }}">
+            {% endif %}
+            <!--<img class="img-fluid rounded" src="{{ post.head_image.url }}" alt="{{ post.title }}"> 86. post_list의 87번째 내용을 가져와서 덮어 씌운 후에 p를 post로 바꿔준다. image-fluid는 꽉차게 보여주는 것, rounded는 모서리가 둥글게 되는것. 이제 models.py로 이동한다.-->
             <hr>
 
             <!-- Post Content -->
