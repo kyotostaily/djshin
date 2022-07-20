@@ -24,7 +24,7 @@
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top"> <!-- 70. fixed-top 지우면 사이트 끝에만 고정된다. blog\static\blog안에css폴더 만든 후에 그 안에 blog-post.css 파일을 만들고(18열에 있는 css파일과 이름 통일) 거기로 이동해서 내용을 입력한다. -->
     <div class="container">
-        <a class="navbar-brand" href="#">Start Bootstrap</a>
+        <a class="navbar-brand" href="#">D</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -73,7 +73,7 @@
             <hr>
 
             <!-- Preview Image -->
-            <img class="img-fluid rounded" src="http://placehold.it/900x300" alt="">
+            <img class="img-fluid rounded" src="{{ post.head_image.url }}" alt="{{ post.title }}"> <!-- 86. post_list의 87번째 내용을 가져와서 덮어 씌운 후에 p를 post로 바꿔준다. image-fluid는 꽉차게 보여주는 것, rounded는 모서리가 둥글게 되는것. 이제 models.py로 이동한다.-->
 
             <hr>
 
