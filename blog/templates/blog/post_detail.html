@@ -17,6 +17,7 @@
     <!-- Custom styles for this template -->
     <link href="{% static 'blog/css/blog-post.css' %}" rel="stylesheet"> <!-- 71. 이와같이 입력한다. -->
 
+    <script src="https://kit.fontawesome.com/609924bd8d.js" crossorigin="anonymous"></script> <!-- 104. 폰트어썸 사용을 위해 post_list에서 복사해온 것을 여기에 붙인다. -->
 </head>
 
 <body>
@@ -81,8 +82,27 @@
             <!--<img class="img-fluid rounded" src="{{ post.head_image.url }}" alt="{{ post.title }}"> 86. post_list의 87번째 내용을 가져와서 덮어 씌운 후에 p를 post로 바꿔준다. image-fluid는 꽉차게 보여주는 것, rounded는 모서리가 둥글게 되는것. 이제 models.py로 이동한다.-->
             <hr>
 
+
             <!-- Post Content -->
             <p>{{ post.content }}</p> <!-- 69. 이전 내용 다 지우고 이렇게 바꾼다.-->
+
+            {% if post.file_upload %} <!-- 91. 파일을 다운로드 할 수 있게 하기위해 이와같이 입력한다. -->
+                <a href="{{ post.file_upload.url }}" type="button" class="btn btn-outline-dark" role="button" download> <!-- 92. bootstrap.com ->components ->buttons에 가서 찾아서 카피하여 붙여넣고 a태그로 바꾸고, a href="{{ post.file_upload.url }}"를 입력한다. 93. role="button" download 을 입력하면 다운로드 할 수 있는 버튼이 생긴다. 이제 models.py로 이동한다. -->
+                    Download: <!-- 98. 이런식으로 입력하여 아래처럼 나열할수 있게 한다. 그리고 폰트 어썸에 가서 아이콘을 찾는다. 그리고 models.py로 이동한다. -->
+                    {% if post.get_file_ext == 'xlsx' or post.get_file_ext == 'xls' %} <!-- 101.만약에(if문) 확장자가 xlsx 또는 xls일때 가져오는 것을 표기 -->
+                        <i class="far fa-file-excel"></i> <!-- 폰트어썸의 excel 아이콘 파일 -->
+                    {% elif post.get_file_ext == 'csv' %} <!-- 105. csv 파일일때 확장자 나오게 한다. -->
+                        <i class="fas fa-file-csv"></i> <!-- 폰트어썸의 csv 아이콘 파일 -->
+                    {% elif post.get_file_ext == 'docx' %} <!-- 106. docx 파일일때 확장자 나오게 한다. -->
+                        <i class="far fa-file-word"></i> <!-- 폰트어썸의 워드 아이콘 파일 -->
+                    {% else %} <!-- 102. 아닌경우 else (아닌경우 그냥 file 아이콘을 보여주라는 것) 이제 post_list의 위(8째줄)로 이동한다.-->
+                        <i class="far fa-file-alt"></i>
+                    {% endif %}
+
+                    {{ post.get_file_name }} <!-- 97. models.py에서 file_name을 출력한다(업로드 파일의 이름을 가져오는 함수) 장고에서는 괄호를 쓸 수 없다. -->
+                </a>
+            {% endif %}
+
             <hr>
 
 

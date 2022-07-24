@@ -1,4 +1,5 @@
 from django.db import models
+import os #95. 파일 이름을 가져오기 위해 import os 패키지를 입력한다.
 
 
 class Post(models.Model):
@@ -17,3 +18,9 @@ class Post(models.Model):
 
     def get_absolute_url(self): #19. index.html에서 지정하려한 함수를 정의한다.
         return f'/blog/{self.pk}/' #고유의 url정의.
+
+    def get_file_name(self): #94. 확장자를 알려면 파일 이름을 알아야 하므로 file_name 입력하고(업로드 파일의 이름을 가져오는 함수),
+        return os.path.basename(self.file_upload.name) #96. os.path(경로).basename(self.file_upload.name), post_detail로 이동한다.
+
+    def get_file_ext(self): #99. 확장자만 가져오는 함수
+        return self.get_file_name().split('.')[-1] #100. '.' 으로 스플릿을 해서 맨 마지막에 확장자[-1]를 가져온다. 그리고 post_detail로 이동한다.
