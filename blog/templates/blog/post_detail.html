@@ -59,7 +59,7 @@
         <div class="col-lg-8" id="main-area"> <!-- 65. id를 main-area로 지정 (12사이즈의 공간중 8을 할애)-->
             <!-- Title -->
             <h1 class="mt-4">{{ post.title }}</h1> <!-- 66. {{ post.title }} 로 변경 -->
-            {% if post.hook_text %} <!-- 112. post_list의 95~97째 줄의 문장을 복사해서 붙여 넣고 p를 post로 바꾸어 놓는다. -->
+            {% if post.hook_text %} <!-- 112. post_list의 95~97째 줄의 문장을 복사해서 붙여 넣고 p를 post로 바꾸어 놓는다. 이제 blog/test.py로 이동한다.-->
                 <h5 class="text-muted">{{ post.hook_text }}</h5>
             {% endif %}
 
