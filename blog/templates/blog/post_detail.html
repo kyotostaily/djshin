@@ -82,7 +82,6 @@
             {% else %}
                 <img class="card-img-top" src="https://picsum.photos/seed/{{ post.id }}/600/200" alt="{{ p.title }}">
             {% endif %}
-            <!--<img class="img-fluid rounded" src="{{ post.head_image.url }}" alt="{{ post.title }}"> 86. post_list의 87번째 내용을 가져와서 덮어 씌운 후에 p를 post로 바꿔준다. image-fluid는 꽉차게 보여주는 것, rounded는 모서리가 둥글게 되는것. 이제 models.py로 이동한다.-->
             <hr>
 
 
@@ -96,7 +95,7 @@
                         <i class="far fa-file-excel"></i> <!-- 폰트어썸의 excel 아이콘 파일 -->
                     {% elif post.get_file_ext == 'csv' %} <!-- 105. csv 파일일때 확장자 나오게 한다. -->
                         <i class="fas fa-file-csv"></i> <!-- 폰트어썸의 csv 아이콘 파일 -->
-                    {% elif post.get_file_ext == 'docx' %} <!-- 106. docx 파일일때 확장자 나오게 한다. 이제 post_list 95째 줄 로 이동한다. -->
+                    {% elif post.get_file_ext == 'docx' %} <!-- 106. docx 파일일때 확장자 나오게 한다. 이제 post_list 99째 줄 로 이동한다. -->
                         <i class="far fa-file-word"></i> <!-- 폰트어썸의 워드 아이콘 파일 -->
                     {% else %} <!-- 102. 아닌경우 else (아닌경우 그냥 file 아이콘을 보여주라는 것) 이제 post_list의 위(8째줄)로 이동한다.-->
                         <i class="far fa-file-alt"></i>
