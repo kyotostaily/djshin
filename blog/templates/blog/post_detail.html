@@ -59,6 +59,9 @@
         <div class="col-lg-8" id="main-area"> <!-- 65. id를 main-area로 지정 (12사이즈의 공간중 8을 할애)-->
             <!-- Title -->
             <h1 class="mt-4">{{ post.title }}</h1> <!-- 66. {{ post.title }} 로 변경 -->
+            {% if post.hook_text %} <!-- 112. post_list의 95~97째 줄의 문장을 복사해서 붙여 넣고 p를 post로 바꾸어 놓는다. -->
+                <h5 class="text-muted">{{ post.hook_text }}</h5>
+            {% endif %}
 
             <!-- Author -->
             <p class="lead">
@@ -93,7 +96,7 @@
                         <i class="far fa-file-excel"></i> <!-- 폰트어썸의 excel 아이콘 파일 -->
                     {% elif post.get_file_ext == 'csv' %} <!-- 105. csv 파일일때 확장자 나오게 한다. -->
                         <i class="fas fa-file-csv"></i> <!-- 폰트어썸의 csv 아이콘 파일 -->
-                    {% elif post.get_file_ext == 'docx' %} <!-- 106. docx 파일일때 확장자 나오게 한다. -->
+                    {% elif post.get_file_ext == 'docx' %} <!-- 106. docx 파일일때 확장자 나오게 한다. 이제 post_list 95째 줄 로 이동한다. -->
                         <i class="far fa-file-word"></i> <!-- 폰트어썸의 워드 아이콘 파일 -->
                     {% else %} <!-- 102. 아닌경우 else (아닌경우 그냥 file 아이콘을 보여주라는 것) 이제 post_list의 위(8째줄)로 이동한다.-->
                         <i class="far fa-file-alt"></i>
