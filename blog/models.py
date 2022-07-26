@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User #181. User의 사용을 위해 임포트 한다.
 import os #95. 파일 이름을 가져오기 위해 import os 패키지를 입력한다.
 
 
@@ -12,10 +13,11 @@ class Post(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    # author: 추후 작성 예정
+
+    author = models.ForeignKey(User, on_delete=models.CASCADE) #181. 유저(작성자)가 탈퇴되면 글까지 같이 지워지는 기능
 
     def __str__(self):
-        return f'[{self.pk}] {self.title}'
+        return f'[{self.pk}] {self.title} :: {self.author}' #182. 이렇게 입력하고 makemigrations를 하고 선택지나오면(1번 후 1번)하고, migrate를 한다. 그러면 admin들어가보면 post란에 author(작성자) 선택란이 생겼다.
 
     def get_absolute_url(self): #19. index.html에서 지정하려한 함수를 정의한다.
         return f'/blog/{self.pk}/' #고유의 url정의.
