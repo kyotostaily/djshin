@@ -7,6 +7,23 @@ class TestView(TestCase): #113. 이런식으로 TestCase를 확장시켜준다.
     def setUp(self): #116. setUp으로 시작한 후 (기본적으로 실행되는 함수이다.)
         self.client = Client() #117. 이렇게 입력하고 위(from)에 TestCase옆에 Client(방문하려는 사람의 브라우저)를 입력한다.
 
+    def navbar_test(self, soup): #167.def navbar_test 의 내용을 아래와같이 입력한다. test라는 단어가 앞에 오면 TestCase에서 하나의 유닛단위로 보기 떄문에 navbar를 먼저 쓴다.
+        navbar = soup.nav #168. 이 soup이 있어야 복사한 내용을 쓸 수 있다.
+        self.assertIn('Blog', navbar.text) #170. Blog가 있는지 테스트
+        self.assertIn('About me', navbar.text) #170. About me가 있는지 테스트, 171. 그리고 다시 37의 내용을 복사 해서 83 ~ 85의 내용을 지우고 그 자리에 붙여넣기 한다.
+
+        logo_btn = navbar.find('a', text='Ds') #173. navbar에서 a태그를 찾는데, text가 Ds인 a태그를 찾는다.
+        self.assertEqual(logo_btn.attrs['href'], '/') #174.
+
+        home_btn = navbar.find('a', text='Home') #173. navbar에서 a태그를 찾는데, text가 Home인 a태그를 찾는다.
+        self.assertEqual(home_btn.attrs['href'], '/') #174.
+
+        blog_btn = navbar.find('a', text='Blog') #173. navbar에서 a태그를 찾는데, text가 Blog인 a태그를 찾는다.
+        self.assertEqual(blog_btn.attrs['href'], '/blog/') #174. 홈이 아니기 때문에 페이지'/blog/'를 입력
+
+        about_me_btn = navbar.find('a', text='About me') #173. navbar에서 a태그를 찾는데, text가 about_me인 a태그를 찾는다.
+        self.assertEqual(about_me_btn.attrs['href'], '/about_me/') #174. 홈이 아니기 때문에 페이지'/about_me/'를 입력, 이제 base.html의 13째 줄로 간다.
+
     def test_post_list(self): #114. 여기서는, 함수를 시작할 때 test_post_list처럼 소문자로 시작한다. 이제 cmder에서 pip install beautifulsoup4(장고에서 웹개발, 파이썬 크롤링 할때 많이쓴다.)를 실행한다.
         # 1.1 포스트 목록 페이지(post list)를 연다. 테스트 할 것들을 이런식 으로 글을 쓰면서 준비를 한다.
         response = self.client.get('/blog/') #115. 서버에다 /blog/라는 url로 요청을 한다.(response)
@@ -15,11 +32,9 @@ class TestView(TestCase): #113. 이런식으로 TestCase를 확장시켜준다.
         # 1.3 페이지의 타이틀에 Blog라는 문구가 있다. 119. 이때 from bs4 import BeautifulSoup으로 임포트한다.
         soup = BeautifulSoup(response.content, 'html.parser') #121. beautifulsoup에서 콘텐츠를 가져오는 것을 response(요청)하는데 그게 html.parser(html형태)이다.
         self.assertIn('Blog', soup.title.text) #122. (바로 위에서 정의된 soup이 가져온) 페이지의 타이틀(title - html요소)의(.text)를 봤을때 Blog라는 문구가 안에 있어야 한다(self.assertIn) 라는 뜻이다.
-        # 1.4 NavBar가 있다.
-        navbar = soup.nav #123. soup.nav 즉, soup. 이후에 html 스크립트의 nav를 입력하면 nav로 접근하기 떄문이다.
-        # 1.5 Blog, About me라는 문구가 Navbar에 있다.
-        self.assertIn('Blog', navbar.text) #124. 122와 같은 방식으로 진행된다.
-        self.assertIn('About me', navbar.text) #124. 122와 같은 방식으로 진행된다. 이제 python manage.py test를 해 본다.
+        # 166. 18 ~ 22의 내용을 잘라내고 10째줄로 가서
+
+        self.navbar_test(soup) # 169. 이것을 입력하면 def post_list상에서 beautiful soup으로 입력한 것을 여기에다 넣어서 def navbar_test로 가서 테스트를 한다.
 
         # 2.1 게시물이 하나도  없을 때
         self.assertEqual(Post.objects.count(), 0) #125. 게시물을 카운트 해 봤을때 0개와 같은(self.assertEqual)지 확인한다.
@@ -65,9 +80,7 @@ class TestView(TestCase): #113. 이런식으로 TestCase를 확장시켜준다.
 
         soup = BeautifulSoup(response.content, 'html.parser')
         # 2.2. 포스트 목록 페이지와 똑같은 내비게이션 바가 있다.
-        navbar = soup.nav #142 post_detail.html(26째 줄)로 가서 확인한다.
-        self.assertIn('Blog', navbar.text) #143. navbar에 Blog가 있는가(지금은 없어서 에러난다. 향후 모듈화로 해결)
-        self.assertIn('About me', navbar.text) #143. navbar에 About me가 있는가 (지금은 없어서 에러난다. 향후 모듈화로 해결)
+        self.navbar_test(soup) #172. 기존의 83~85내용을 지우고 37의 내용을 붙여넣기 한다.(이것을 입력하면 def test_post_detail상에서 beautiful soup으로 입력한 것을 여기에다 넣어서 def navbar_test로 가서 테스트를 한다.) 이제 15줄로 이동한다.
 
         # 2.3. 첫 번째 포스트의 제목이 웹 브라우저 탭 타이틀에 들어 있다.
         self.assertIn(post_001.title, soup.title.text) #144. post_001의 타이틀이 soup에 있어야 한다는 뜻 161. 맨뒤에 .text를 추가한다(글자가 있는지 보기 위해서) 이제 post_detail.html의 8째줄로 이동한다.
