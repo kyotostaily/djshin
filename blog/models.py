@@ -3,6 +3,17 @@ from django.contrib.auth.models import User #181. User의 사용을 위해 임�
 import os #95. 파일 이름을 가져오기 위해 import os 패키지를 입력한다.
 
 
+class Category(models.Model): #194. 카테고리 항목에 대한 설정
+    name = models.CharField(max_length=50, unique=True) #195. 카테고리에 대한 이름(길이, unique=True는 유일해야 한다는 의미)
+    slug = models.SlugField(max_length=50, unique=True, allow_unicode=True) #196. slug는 이해할 수 있는 글자로 구분한다는 것이며 그래서 뒤에 당연히 unique가 와야하며, allow_unicode=True는 한글사용이 가능하다는 것을 의미한다.)
+
+    def __str__(self): #197. 이걸 해줘야 admin에서 구분이 가능하다.
+        return self.name #197. 이걸 가지고 보여주겠다는 의미이다. 이제 29줄로 내려간다.
+
+    class Meta: #204. Category를 복수형의 이름으로 바꿔줄때 이와같이 입력한다.
+        verbose_name_plural = 'Categories' #204.
+
+
 class Post(models.Model):
     title = models.CharField(max_length=50)
     hook_text = models.CharField(max_length=100, blank=True) #108. hook_text(요약문:이름은 자기맘대로) 109.이제 cmder에서 migration(인식)과 migrate(반영)를 한다. 이제 templates파일 수정을 위해 post_list.html(95째줄)로 간다.
@@ -15,6 +26,7 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL) #181. 유저(작성자)가 탈퇴되면 글까지 같이 지워지는 기능 183.(User, on_delete=models.CASCADE) -> (User, null=True, on_delete=models.SET_NULL)로 바꾸고 makemigrations 후 migrate를 하면 작성자가 탈퇴해도 글은 남아있다. 이제 tests.py의 9째줄로 이동한다.
+    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL) #198. (카테고리, null=True(데이터베이스안에 있어야된다 혹은 없어야된다를 정의), (blank=True:필수사항이 들어갔는지 아닌지 검사해준다) on_delete=models.SET_NULL(작성자가 탈퇴해도 글은 남아있다.) 이후, makemigrations와 migrate를 한다. 이제 admin.py로 간다.
 
     def __str__(self):
         return f'[{self.pk}] {self.title} :: {self.author}' #182. 이렇게 입력하고 makemigrations를 하고 선택지나오면(1번 후 1번)하고, migrate를 한다. 그러면 admin들어가보면 post란에 author(작성자) 선택란이 생겼다.
