@@ -31,36 +31,24 @@
             </div>
 
             <!-- Categories Widget -->
-            <div class="card my-4">
+            <div class="card my-4" id="categories-card"> <!-- 259. id를 categories-card로 지정한다. 이후 51~63의 내용은 삭제한다.-->
                 <h5 class="card-header">Categories</h5>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-lg-6">
-                            <ul class="list-unstyled mb-0">
-                                <li>
-                                    <a href="#">Web Design</a>
-                                </li>
-                                <li>
-                                    <a href="#">HTML</a>
-                                </li>
-                                <li>
-                                    <a href="#">Freebies</a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="col-lg-6">
-                            <ul class="list-unstyled mb-0">
-                                <li>
-                                    <a href="#">JavaScript</a>
-                                </li>
-                                <li>
-                                    <a href="#">CSS</a>
-                                </li>
-                                <li>
-                                    <a href="#">Tutorials</a>
-                                </li>
-                            </ul>
-                        </div>
+                        <!-- 273. 이 자리의 div class 문도 삭제한다.-->
+                        <ul> <!-- 261. 272.(class문을 삭제한다.:마음에 들면 놔둬도 된다.) 아래 for category문과 endfor문을 입력한다. -->
+                            {% for category in categories %}
+                            <li>
+                                <a href="#">{{ category.name }} ({{ category.post_set.count }})</a> <!-- 262. 카테고리 이름이 설정한 대로, 그와 관련된 카운트의 숫자가 들어가도록 이렇게 입력한다. 이제 views.py의 10째줄로 이동한다. -->
+                            </li>
+                            {% endfor %}
+                            <li>
+                                <a href="#">미분류 ({{ no_category_post_count }})</a> <!-- 267.위의 내용들을 복사해서 붙여넣고 미분류에 대해서 이와같이 입력한다. 이제 post_list.html의 11째줄로 이동한다. -->
+                            </li>
+
+                        </ul>
+
+
                     </div>
                 </div>
             </div>

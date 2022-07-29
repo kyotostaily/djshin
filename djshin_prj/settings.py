@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions', #206. extensions를 설치했기 때문에 여기에 이렇게 입력을 해 준다. 이후 python manage.py shell_plus를 입력해본다. 이제 tests.py의 19번째 줄로 이동한다.
 
     'blog',
     'single_pages',

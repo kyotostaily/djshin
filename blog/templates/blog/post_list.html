@@ -8,13 +8,18 @@
 
 {% for p in post_list %} <!-- 52. 이렇게 작성한다 -->
 <!-- Blog Post -->
-<div class="card mb-4">
+<div class="card mb-4" id="post-{{ p.id }}"> <!-- 268. id를 이와같이 입력한다. 그러면 ctr+U를 쳐보면 각각의 id에 번호가 붙는다. 18째줄로 이동한다.-->
     {% if p.head_image %} <!-- 88. 이전것에 덮어씌워서 이것부터 endif 까지 이와같이 입력한다(head_image가 있을때 이것을 보여준다) -->
     <img class="card-img-top" src="{{ p.head_image.url }}" alt="{{ p.title }}">
     {% else %}
     <img class="card-img-top" src="https://picsum.photos/seed/{{ p.id }}/600/200" alt="{{ p.title }}"> <!-- 89. 84번 내용 지우고, else문 아래에 로럼 픽섬을 사용해서 가져와서 이와같이 추가한다.(아이디 속성을 seed/{{ p.id }}형식으로 추가하여 그림을 고정 이후 blog/post_detail.html로 이동) -->
     {% endif %} <!-- 84의 항목은 삭제한다.(이전것 참조) -->
-    <div class="card-body">
+    <div class="card-body"> <!-- 271. if문을 써서 else, endif까지 사용하여 이와같이 문장을 구성한다. 이제 base.html 39째 줄로 이동한다.-->
+        {% if p.category %}
+            <span class="badge badge-secondary float-right">{{ p.category }}</span> <!-- 269. 부트스트랩(버전4.6)에 가서 뱃지에 관한 코드를 복사해와서 붙인후 이와같이 입력한다. float-right입력시 오른쪽으로 붙는다.-->
+        {% else %}
+            <span class="badge badge-secondary float-right">미분류</span> <!-- 270. 미분류에 관한 것도 부트스트랩에 들어가 복사해 온후 이와같이 입력한다. -->
+        {% endif %}
         <h2 class="card-title">{{ p.title }}</h2> <!-- 54. {{ p.title }}로 입력  -->
         {% if p.hook_text %} <!-- 110. hook_text 사용을 위해 endif 문까지 아래와 같이 입력한다. (if문. 만약에 hook_text가 있을때)-->
         <h5 class="text-muted">{{ p.hook_text }}</h5> <!-- 111. hook_text문이 있으면 보여주는 것, class="text-muted"는 텍스트가 살짝 흐릿하게 된다. 이제 post_detail.html(62째줄)로 가서 수정한다.-->
