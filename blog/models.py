@@ -10,6 +10,9 @@ class Category(models.Model): #194. 카테고리 항목에 대한 설정
     def __str__(self): #197. 이걸 해줘야 admin에서 구분이 가능하다.
         return self.name #197. 이걸 가지고 보여주겠다는 의미이다. 이제 29줄로 내려간다.
 
+    def get_absolute_url(self): #289. 일단 blog로 시작을 해서 category다음에 self.slug(고유값)을 이용해서 url을 만들겠다는 뜻이다.
+        return f'/blog/category/{self.slug}/' #289. 이제 blog/urls.py의 5째줄로 이동한다.
+
     class Meta: #204. Category를 복수형의 이름으로 바꿔줄때 이와같이 입력한다.
         verbose_name_plural = 'Categories' #204. 이렇게 입력하고 205. cmder에서 pip install django_extensions를 입력해 설치후, pip install ipython을 설치하고 settings.py 40째 줄로 넘어간다.
 

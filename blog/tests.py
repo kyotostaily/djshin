@@ -143,3 +143,18 @@ class TestView(TestCase): #113. 이런식으로 TestCase를 확장시켜준다.
 
         self.assertIn(self.user_trump.username.upper(), post_area.text) #192. 이 내용이 post_area안에 있으면 좋겠다는 뜻이다. 이제 post_detail.html의 18번째 줄로 간다.
         self.assertIn(self.post_001.content, post_area.text) #241.self를 붙이고 74줄로 이동한다.
+
+    def test_category_page(self): #278. category_page의 테스트코드를 작성한다.
+        response = self.client.get(self.category_programming.get_absolute_url()) #279 해당하는 카테고리에 absolute_url을 통해서 가도록 만든다.
+        self.assertEqual(response.status_code, 200) #280. 잘나오는지 200인지 확인하고,
+
+        soup = BeautifulSoup(response.content, 'html.parser') #281. soup을 써야 여러 필요한 것들을 불러올수 있고 html.parser를 써서 soup에다가 담아준다.
+        self.navbar_test(soup) #282. soup넣고 navbar테스트 하고
+        self.category_card_test(soup) #283. 여기도 soup넣고 카테고리 카드 테스트도 한다.(카테고리 페이지가 만들어지면서, post_list의 화면 분할이 해결이 되었다.
+
+        main_area = soup.find('div', id='main-area') #284. 139째줄의 내용을 복사해서 붙인다.(div로 되어있는 id가 main-area인 것을 가져와라)
+        self.assertIn(self.category_programming.name, main_area.h1.text) #285. main-area의 h1에 programming.name이 있어야 한다.
+        self.assertIn(self.category_programming.name, main_area.text) #288. main-area에 programming.name이 있어야 한다. 이제 models.py의 13째 줄로 이동한다.
+        self.assertIn(self.post_001.title, main_area.text) #286.setup에서 programming은 post_001하나밖에 없으므로, 이것 하나만 입력한다.
+        self.assertNotIn(self.post_002.title, main_area.text) #287. 여기서 002와 003은 보이면 안되므로 NotIn을 붙여준다.
+        self.assertNotIn(self.post_003.title, main_area.text) #287. 여기서 002와 003은 보이면 안되므로 NotIn을 붙여준다. 이제 155줄로 이동한다.

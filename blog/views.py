@@ -23,3 +23,23 @@ class PostDetail(DetailView): #43. 이렇게 써놓고 확장한다.
         context['categories'] = Category.objects.all()
         context['no_category_post_count'] = Post.objects.filter(category=None).count()
         return context
+
+
+def category_page(request, slug): #291. category_page의 함수를 아래와같이 작성한다.
+    if slug == 'no_category': #292. 미분류일때
+        category = '미분류'
+        post_list = Post.objects.filter(category=None)
+    else: #293. 아니면 slug로 넘어오는 것이 있을때 slug와 똑같은 것을 가져오라는 뜻이다.
+        category = Category.objects.get(slug=slug)
+        post_list = Post.objects.filter(category=category)
+
+    return render(
+        request,
+        'blog/post_list.html',
+        {
+            'post_list': post_list,
+            'categories': Category.objects.all(),
+            'no_category_post_count': Post.objects.filter(category=None).count(),
+            'category': category
+        }
+    ) #294. 여기서는 클래스뷰가 아니기 떄문에 기본적으로 이와같이 다 설정을 해 주어야 한다. 위의 13,14줄의 내용을 참고하여 똑같이 써 준다. 이제 post_list.html으로 이동한다.
