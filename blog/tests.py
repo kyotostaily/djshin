@@ -132,14 +132,14 @@ class TestView(TestCase): #113. 이런식으로 TestCase를 확장시켜준다.
         soup = BeautifulSoup(response.content, 'html.parser')
         # 2.2. 포스트 목록 페이지와 똑같은 내비게이션 바가 있다.
         self.navbar_test(soup) #172. 기존의 83~85내용을 지우고 37의 내용을 붙여넣기 한다.(이것을 입력하면 def test_post_detail상에서 beautiful soup으로 입력한 것을 여기에다 넣어서 def navbar_test로 가서 테스트를 한다.) 이제 15줄로 이동한다.
+        self.category_card_test(soup) #274. post_detail.html페이지를 위한 category_card_test를 추가한다.
 
-        # 2.3. 첫 번째 포스트의 제목이 웹 브라우저 탭 타이틀에 들어 있다.
         self.assertIn(self.post_001.title, soup.title.text) #239. self를 붙인다.
-        # 2.4. 첫 번째 포스트의 제목이 포스트 영역에 있다.
+
         main_area = soup.find('div', id='main-area')
         post_area = main_area.find('div', id='post-area') #145. post_area는 main_area 안에 있고 id는 post-area다. 이렇게 안되있으면 html파일을 열어서 고쳐야된다.
         self.assertIn(self.post_001.title, post_area.text) #240. self를 붙인다.
-        # 2.5. 첫 번째 포스트의 작성자(author)가 포스트 영역에 있다(아직 구현할 수 없음).
+        self.assertIn(self.post_001.category.name, post_area.text) #275. post-area의 카테고리에 네임이 있어야 한다. 이제 views.py의 21째 줄로 이동한다.
+
         self.assertIn(self.user_trump.username.upper(), post_area.text) #192. 이 내용이 post_area안에 있으면 좋겠다는 뜻이다. 이제 post_detail.html의 18번째 줄로 간다.
-        # 2.6. 첫 번째 포스트의 내용(content)이 포스트 영역에 있다.
         self.assertIn(self.post_001.content, post_area.text) #241.self를 붙이고 74줄로 이동한다.

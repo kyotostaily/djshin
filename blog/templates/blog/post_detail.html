@@ -6,6 +6,11 @@
 
 {% block main_area %}
 <div id="post-area"> <!-- 162. id로 post-area를 지정한 후 아래 58열째로 간다. 이렇게 지정하면 tests.py에서 post-area에 관한 div를 찾을수 있다. -->
+    {% if post.category %}
+        <span class="badge badge-secondary float-right">{{ post.category }}</span> <!-- 277. if문(9~13)을 endif까지 이와같이 붙여넣고 p를 post로 바꿔놓는다. -->
+    {% else %}
+        <span class="badge badge-secondary float-right">미분류</span>
+    {% endif %}
     <!-- Title -->
     <h1 class="mt-4">{{ post.title }}</h1> <!-- 66. {{ post.title }} 로 변경 -->
     {% if post.hook_text %} <!-- 112. post_list의 95~97째 줄의 문장을 복사해서 붙여 넣고 p를 post로 바꾸어 놓는다. 이제 blog/test.py로 이동한다.-->

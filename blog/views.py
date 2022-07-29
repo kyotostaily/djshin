@@ -17,3 +17,9 @@ class PostList(ListView): #38. 리스트를 보여주고 싶으면 이렇게 모
 
 class PostDetail(DetailView): #43. 이렇게 써놓고 확장한다.
     model = Post
+
+    def get_context_data(self, **kwargs): #276. 위엣것을 복사해서 이와같이 바꿔준다. 이제 post_list.html의 18~22을 복사해서 post_detail.html의 9번째 줄에 붙여주고 그곳으로 이동한다.
+        context = super(PostDetail, self).get_context_data()
+        context['categories'] = Category.objects.all()
+        context['no_category_post_count'] = Post.objects.filter(category=None).count()
+        return context
