@@ -17,6 +17,17 @@ class Category(models.Model): #194. 카테고리 항목에 대한 설정
         verbose_name_plural = 'Categories' #204. 이렇게 입력하고 205. cmder에서 pip install django_extensions를 입력해 설치후, pip install ipython을 설치하고 settings.py 40째 줄로 넘어간다.
 
 
+class Tag(models.Model):  #298. 6~14의 내용을 복사해서 붙여넣고 Tag라고 이름을 바꿔준다.(Tag라는 모델을 새로 만들었고 아래와 같이 네임과 슬러그가 있음)
+    name = models.CharField(max_length=50, unique=True)
+    slug = models.SlugField(max_length=50, unique=True, allow_unicode=True)
+
+    def __str__(self):
+        return self.name #300. 문자형태는 name을 돌려주는 형태로 했음. 이제 44줄로 이동한다.
+
+    def get_absolute_url(self):
+        return f'/blog/tag/{self.slug}/' #299. tag라고 이름을 바꿔준다.
+
+
 class Post(models.Model):
     title = models.CharField(max_length=50)
     hook_text = models.CharField(max_length=100, blank=True) #108. hook_text(요약문:이름은 자기맘대로) 109.이제 cmder에서 migration(인식)과 migrate(반영)를 한다. 이제 templates파일 수정을 위해 post_list.html(95째줄)로 간다.
@@ -30,6 +41,7 @@ class Post(models.Model):
 
     author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL) #181. 유저(작성자)가 탈퇴되면 글까지 같이 지워지는 기능 183.(User, on_delete=models.CASCADE) -> (User, null=True, on_delete=models.SET_NULL)로 바꾸고 makemigrations 후 migrate를 하면 작성자가 탈퇴해도 글은 남아있다. 이제 tests.py의 9째줄로 이동한다.
     category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.SET_NULL) #198. (카테고리, null=True(데이터베이스안에 있어야된다 혹은 없어야된다를 정의), (blank=True:필수사항이 들어갔는지 아닌지 검사해준다) on_delete=models.SET_NULL(작성자가 탈퇴해도 글은 남아있다.) 이후, makemigrations와 migrate를 한다. 이제 admin.py로 간다.
+    tags = models.ManyToManyField(Tag, blank=True) #301. tag를 다대다 관계 ManyToMany 로 설정후 makemigrations 이후 migrate를 한다. 이제 admin의 11째 줄로 간다.
 
     def __str__(self):
         return f'[{self.pk}] {self.title} :: {self.author}' #182. 이렇게 입력하고 makemigrations를 하고 선택지나오면(1번 후 1번)하고, migrate를 한다. 그러면 admin들어가보면 post란에 author(작성자) 선택란이 생겼다.

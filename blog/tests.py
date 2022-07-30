@@ -1,7 +1,7 @@
 from django.test import TestCase, Client #118. Client입력
 from django.contrib.auth.models import User #185. models.py에 가서 User의 사용을 위해 복사해서 붙여넣는다.
 from bs4 import BeautifulSoup #119.
-from .models import Post, Category #120. models도 가져와야 하기에 임포트한다. 208. Category를 임포트한다.
+from .models import Post, Category, Tag #120. models도 가져와야 하기에 임포트한다. 208. Category를 임포트한다. 305. Tag를 임포트한다.
 
 
 class TestView(TestCase): #113. 이런식으로 TestCase를 확장시켜준다.
@@ -23,12 +23,24 @@ class TestView(TestCase): #113. 이런식으로 TestCase를 확장시켜준다.
             name='music', slug='music' #210. 이렇게 만들고 80~89의 내용을 잘라내고(그 위의 주석은 지우고), 26열에 붙여넣는다.
         )
 
+        self.tag_python_kor = Tag.objects.create( #305. Tag의 테스트를 위해 26~34와 같이 입력하고, 위에 Tag를 임포트 한다.
+            name='파이썬 공부', slug='파이썬-공부' #306. tag_python_kor 라는 Tag
+        )
+        self.tag_python = Tag.objects.create(
+            name='python', slug='python' #307. tag_python이라는 Tag
+        )
+        self.tag_hello = Tag.objects.create(
+            name='hello', slug='hello' #308. tag_hello라는 Tag, 이제 42째 줄로 이동한다.
+        )
+
         self.post_001 = Post.objects.create( #211.접근을 위해 앞에 self를 붙여준다.
             title='첫 번째 포스트 입니다.',
             content='Hello, World. We are the World.',
             category=self.category_programming, #214. 카테고리가 프로그래밍으로 붙여줌
             author=self.user_trump  # 187. 작성자가 있어야 하는 상황이므로 위에서 입력했던 유저를 각각 입력한다.
         )
+        self.post_001.tags.add(self.tag_hello) #309. 이것을 입력함으로 ManytoManyField에 하나가 추가된것이다.
+
         self.post_002 = Post.objects.create( #212.접근을 위해 앞에 self를 붙여준다.
             title='두 번째 포스트 입니다.',
             content='저는 쌀국수를 좋아합니다. ',
@@ -41,6 +53,8 @@ class TestView(TestCase): #113. 이런식으로 TestCase를 확장시켜준다.
             content='Category가 없을 수도 있죠.',
             author=self.user_obama
         )
+        self.post_003.tags.add(self.tag_python_kor) #310. 위에 29, 32에 입력했던 태그들을 이곳에 입력한다.
+        self.post_003.tags.add(self.tag_python) #310. 위에 29, 32에 입력했던 태그들을 이곳에 입력한다. 이제 110줄로 이동한다.
 
     def navbar_test(self, soup): #167.def navbar_test 의 내용을 아래와같이 입력한다. test_라는 단어가 앞에 오면 TestCase에서 하나의 유닛단위로 보기 떄문에 navbar를 먼저 쓴다.
         navbar = soup.nav #168. 이 soup이 있어야 복사한 내용을 쓸 수 있다.
@@ -93,14 +107,23 @@ class TestView(TestCase): #113. 이런식으로 TestCase를 확장시켜준다.
         post_001_card = main_area.find('div', id='post-1') #243.post_001의 card에 관한 것을 main_area안에서 div를 찾는데, id는 post-1인것.
         self.assertIn(self.post_001.title, post_001_card.text) #134. post_001의 타이틀이 main-area의 text안에서 있는지 확인 232.self를 붙여준다. 244. main-area를 post_001_card로 바꿔준다.
         self.assertIn(self.post_001.category.name, post_001_card.text) #249. self.post_001.category.name이 self.post_001_card 안에 있기를 바라는 것이다.
+        self.assertIn(self.tag_hello.name, post_001_card.text) #311. assertIn을 사용해서 태그가 이와같이 있어야 한다는 것이다.
+        self.assertNotIn(self.tag_python.name, post_001_card.text) #312. assertNotIn을 사용해서 위의 tag_hello외에는 영향이 없게한다.
+        self.assertNotIn(self.tag_python_kor.name, post_001_card.text) #312. assertNotIn을 사용해서 위의 tag_hello외에는 영향이 없게한다.
 
         post_002_card = main_area.find('div', id='post-2') #246.post_002의 card에 관한 것을 main_area안에서 div를 찾는데, id는 post-2인것.
         self.assertIn(self.post_002.title, post_002_card.text) #135. post_002의 타이틀이 main-area의 text안에서 있는지 확인 233.self를 붙여준다. 245. main-area를 post_002_card로 바꿔준다.
         self.assertIn(self.post_002.category.name, post_002_card.text) #250. self.post_002.category.name이 self.post_002_card 안에 있기를 바라는 것이다.
+        self.assertNotIn(self.tag_hello.name, post_002_card.text) #313. 여기는 태그된게 없기 때문에 세줄 전부 assertNotIn으로 해야된다.
+        self.assertNotIn(self.tag_python.name, post_002_card.text) #313.
+        self.assertNotIn(self.tag_python_kor.name, post_002_card.text) #313.
 
         post_003_card = main_area.find('div', id='post-3') #247. post_003의 card에 관한 것을 main_area안에서 div를 찾는데, id는 post-3인것.
         self.assertIn(self.post_003.title, post_003_card.text) #248. main-area를 post_003_card로 바꿔준다. (이렇게 하면 post_list.html에 card가 3개가 나타나고 title이 제대로 들어가 있는지 확인을 한다.)
         self.assertIn('미분류', post_003_card.text) #251.post_003_card에는 카테고리가 없기 때문에, 없는 경우에는 미분류로 표시 해준다. 이제 62줄로 이동한다.
+        self.assertNotIn(self.tag_hello.name, post_003_card.text) #314.tag_hello는 여기선 영향을 미치면 안되므로 assertNotIn
+        self.assertIn(self.tag_python.name, post_003_card.text) #315. tag_python은 여기에 태그되있으므로 assertIn
+        self.assertIn(self.tag_python_kor.name, post_003_card.text) #316. tag_python_kor또한 여기에 태그되 있으므로 assertIn. 이제 post_list.html의 33째줄로 간다.
 
         self.assertIn(self.post_001.author.username.upper(), main_area.text) #234.self를 붙여준다.
         self.assertIn(self.post_002.author.username.upper(), main_area.text) #235.self를 붙여준다. 이후 104번째 줄로 이동한다.
