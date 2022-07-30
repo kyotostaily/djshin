@@ -167,6 +167,10 @@ class TestView(TestCase): #113. 이런식으로 TestCase를 확장시켜준다.
         self.assertIn(self.user_trump.username.upper(), post_area.text) #192. 이 내용이 post_area안에 있으면 좋겠다는 뜻이다. 이제 post_detail.html의 18번째 줄로 간다.
         self.assertIn(self.post_001.content, post_area.text) #241.self를 붙이고 74줄로 이동한다.
 
+        self.assertIn(self.tag_hello.name, post_area.text) #318. 110~112의 내용을 복사해서 붙이고, post_area로 변경하여 테스트한다.
+        self.assertNotIn(self.tag_python.name, post_area.text) #318
+        self.assertNotIn(self.tag_python_kor.name, post_area.text) #318. 이후 post_detail.html의 45째줄로 이동한다.
+
     def test_category_page(self): #278. category_page의 테스트코드를 작성한다.
         response = self.client.get(self.category_programming.get_absolute_url()) #279 해당하는 카테고리에 absolute_url을 통해서 가도록 만든다.
         self.assertEqual(response.status_code, 200) #280. 잘나오는지 200인지 확인하고,
