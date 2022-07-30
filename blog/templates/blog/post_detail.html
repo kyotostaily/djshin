@@ -41,7 +41,7 @@
 
     <!-- Post Content -->
     <p>{{ post.content }}</p> <!-- 69. 이전 내용 다 지우고 이렇게 바꾼다.-->
-    <!-- 319. 태그 사용을 위해 아래와 같이 post_list에서 내용(33~40)을 가져와 복사하여 붙여넣은 후 p를 post로 바꾼다. -->
+    <!-- 319. 태그 사용을 위해 아래와 같이 post_list에서 내용(33~40)을 가져와 복사하여 붙여넣은 후 p를 post로 바꾼다. 이제 tests.py의 맨 아래(189)로 이동한다. -->
     {% if post.tags.exists %}
         <i class="fas fa-tags"></i>
         {% for tag in post.tags.iterator %}

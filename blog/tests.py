@@ -185,3 +185,19 @@ class TestView(TestCase): #113. 이런식으로 TestCase를 확장시켜준다.
         self.assertIn(self.post_001.title, main_area.text) #286.setup에서 programming은 post_001하나밖에 없으므로, 이것 하나만 입력한다.
         self.assertNotIn(self.post_002.title, main_area.text) #287. 여기서 002와 003은 보이면 안되므로 NotIn을 붙여준다.
         self.assertNotIn(self.post_003.title, main_area.text) #287. 여기서 002와 003은 보이면 안되므로 NotIn을 붙여준다. 이제 155줄로 이동한다.
+
+    def test_tag_page(self): #320.174의 내용을 가져와서 test_tag_page 라는 테스트 함수를 만들고 아래와같이 입력한다.
+        response = self.client.get(self.tag_hello.get_absolute_url()) #321카테고리가 아닌 tag_hello의 절대경로 get_absolute_url()로 가게 한다.
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        self.navbar_test(soup)
+        self.category_card_test(soup)
+
+        self.assertIn(self.tag_hello.name, soup.h1.text)
+        main_area = soup.find('div', id='main-area')
+        self.assertIn(self.tag_hello.name, main_area.text)
+
+        self.assertIn(self.post_001.title, main_area.text) #322. tag_hello가 달려있는 것은 post_001뿐이므로 이것만 assertIn을 해주고
+        self.assertNotIn(self.post_002.title, main_area.text) #323. 이것들은 없으므로 assertNotIn
+        self.assertNotIn(self.post_003.title, main_area.text) #323. 이것들은 없으므로 assertNotIn. 이제 blog/urls.py의 5째줄로 이동한다.
