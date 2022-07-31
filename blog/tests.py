@@ -15,6 +15,8 @@ class TestView(TestCase): #113. 이런식으로 TestCase를 확장시켜준다.
             username='obama',
             password='somepassword'
         )
+        self.user_obama.is_staff = True #366. obama는 스태프권한이 있는 상태라는 뜻
+        self.user_obama.save() #367. save를 해 준다. 이제 214줄로 이동한다.
 
         self.category_programming = Category.objects.create( #207. 테스트 목적으로 programming이라는 카테고리를 만든다. 여기서 self를 붙이는 이유는 이걸 붙여야 이 안에 다른 테스트 항목에서도 적용될수 있기 때문이다.
             name='programming', slug='programming' #209. 이름과 슬러그를 programming으로 지정한다(왜냐면 지금은 admin에서 만드는게 아니기 때문에 직접 지정해 줘야하기 때문이다.)
@@ -209,10 +211,13 @@ class TestView(TestCase): #113. 이런식으로 TestCase를 확장시켜준다.
     def test_create_post_with_login(self): #347. 로그인 했을 경우(테스트)
         self.client.login(username='trump', password='somepassword') #348. 유저네임과 비번 설정된 상태에서
         response = self.client.get('/blog/create_post/') #349. 이곳으로 잘 가야된다. 이제 views.py의 3째줄로 이동한다.
+        self.assertNotEqual(response.status_code, 200) #368. trump는 스태프가 아니므로 assertNotEqual이 되야한다.
 
-        self.assertEqual(response.status_code, 200)
+        self.client.login(username='obama', password='somepassword') #369. trump대신 obama를 입력하고
+        response = self.client.get('/blog/create_post/') #370. 이 경로로 잘 가야되며
+        self.assertEqual(response.status_code, 200) #371. obama는 현재 스태프 권한이 있으므로 assertEqueal이 되어야 한다. 235줄로 이동한다.
+
         soup = BeautifulSoup(response.content, 'html.parser')
-
         self.assertEqual('Create Post - Blog', soup.title.text)
         main_area = soup.find('div', id='main-area')
         self.assertIn('Create a New Post', main_area.text)
@@ -227,5 +232,5 @@ class TestView(TestCase): #113. 이런식으로 TestCase를 확장시켜준다.
 
         last_post = Post.objects.last() #356. 맨 마지막 포스트를 가져와라
         self.assertEqual(last_post.title, 'Post Form 만들기') #357. last_post.title의 내용
-        self.assertEqual(last_post.author.username, 'trump') #358. " "  의 author의 유저네임
+        self.assertEqual(last_post.author.username, 'obama') #372. 스태프가 obama이므로 바꿔준다. 이제 views.py의 29번째줄로 이동한다.
         self.assertEqual(last_post.content, 'Post Form 페이지를 만듭시다.') #359. " "의 내용. 이제 views.py의 33째줄로 간다.

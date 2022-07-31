@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect #365. redirect를 임포트한다.
 from django.views.generic import ListView, DetailView, CreateView #335. CreateView를 임포트한다.
-from django.contrib.auth.mixins import LoginRequiredMixin #350. 이와같이 LoginRequiredMixin을 임포트하고 29줄에 복사해서 붙여넣기
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin #373., UserPassesTestMixin임포트
 from .models import Post, Category, Tag #265. Category를 임포트 시킨다. 325.Tag임포트.
 
 #39. ListView를 확장해서 model을 어떤 모델을 쓸것인지 정의하고(model = Post), ordering을 바꿔주면 된다. 그리고 파일명도 post_list.html로 바꿔준다.
@@ -26,17 +26,20 @@ class PostDetail(DetailView): #43. 이렇게 써놓고 확장한다.
         return context
 
 
-class PostCreate(LoginRequiredMixin, CreateView): #335. urls.py에서지정한 PostCreate에 대한 내용을 아래와같이 입력한 후, 위에 CreateView(새로운 레코드의 인스턴스를 만들게 하는 기능이다.)를 임포트한다. 351. LoginRequiredMixin를 추가한다. 이제 tests.py의 220째줄로 이동한다.
+class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView): #373. LoginRequiredMixin은 로그인될때만 페이지 열리게 하는 기능이며, UserPassesTestMixin(어떤 특수한 사용자만 들어오게 하고싶은 기능)를 추가하고 3째줄에 임포트한다.
     model = Post
     fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category'] #336. models.py의 Post에 가서 fields(사용할 필드들)안에 무엇이 있으면 좋겠는가 보고 입력해 넣는다. 337. 이제 blog/post_form.html을 만든다.
 
+    def test_func(self): #374.UserPassesTestMixin을 할 때 이 테스트를 거치게 된다.
+        return self.request.user.is_superuser or self.request.user.is_staff #375. superuser이거나 staff 일 때 이 페이지가 열려야 한다는 조건이다.
+
     def form_valid(self, form): #360. CreateView는 form_valid(form의 내용들이 유효한지 검사해주는 기능)라는 기능을 갖고있다. 이를 이용하여(오버라이딩) 아래와 같이(33~39) 입력한다.
         current_user = self.request.user #361. request한 사용자가
-        if current_user.is_authenticated: #362. 로그인을 했으면
+        if current_user.is_authenticated and (current_user.is_staff or current_user.is_superuser):#362. 로그인을 했으면 #376. 로그인 되있는지 확인하고, current_user가 staff인지 superuser인지 확인. 이제 post_list.html의 4째줄로 이동한다.
             form.instance.author = current_user #363. PostCreate에서 만들어진 CreateView가 제공하는 폼에 instance에 채워진 author라는 필드를 currunt_user로 채워라는 뜻
             return super(PostCreate, self).form_valid(form) #364. 이와 같이 입력하여 원래 받아야 할 기능들은 다 받으면서 363까지의 form을 원래 기본설정으로 보내는 문장.
         else:
-            return redirect('/blog/') #365. 로그인을 안했으면 redirect를 사용하여 /blog/로 돌려보낸다. 1째줄에 임포트한다.
+            return redirect('/blog/') #365. 로그인을 안했으면 redirect를 사용하여 /blog/로 돌려보낸다. 1째줄에 임포트한다. 이제 tests.py의 18째 줄로 이동한다.
 
 
 def category_page(request, slug): #291. category_page의 함수를 아래와같이 작성한다.
