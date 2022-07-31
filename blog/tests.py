@@ -201,3 +201,12 @@ class TestView(TestCase): #113. 이런식으로 TestCase를 확장시켜준다.
         self.assertIn(self.post_001.title, main_area.text) #322. tag_hello가 달려있는 것은 post_001뿐이므로 이것만 assertIn을 해주고
         self.assertNotIn(self.post_002.title, main_area.text) #323. 이것들은 없으므로 assertNotIn
         self.assertNotIn(self.post_003.title, main_area.text) #323. 이것들은 없으므로 assertNotIn. 이제 blog/urls.py의 5째줄로 이동한다.
+
+    def test_create_post(self): #327. create_post에 관한 함수
+        response = self.client.get('/blog/create_post/') #328. 이 페이지를 열도록
+        self.assertEqual(response.status_code, 200) #329. 잘 들어갔을때 200이 뜨고
+        soup = BeautifulSoup(response.content, 'html.parser') #330. 읽어온 페이지가 html.parser를 받는다.
+
+        self.assertEqual('Create Post - Blog', soup.title.text) #331. 'Create Post - Blog'이 soup.title에 있다.
+        main_area = soup.find('div', id='main-area') #332. id가 main-area인 div를 찾는다.
+        self.assertIn('Create a New Post', main_area.text) #333. 'Create a New Post'라는 단어가 main_area.text안에 있어야 한다. 이제 blog/urls.py의 5째줄로 간다.

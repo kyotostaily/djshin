@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView #32. list를 보여주는 것은 ListView라는 것이 있다. 이것을 상속받아서 확장하면 된다. 40. DeatailView는 하나만 보여주고 싶을 때 사용한다.(Post.objects.get)을 대체할 수 있다.
+from django.views.generic import ListView, DetailView, CreateView #335. CreateView를 임포트한다.
 from .models import Post, Category, Tag #265. Category를 임포트 시킨다. 325.Tag임포트.
 
 #39. ListView를 확장해서 model을 어떤 모델을 쓸것인지 정의하고(model = Post), ordering을 바꿔주면 된다. 그리고 파일명도 post_list.html로 바꿔준다.
@@ -23,6 +23,11 @@ class PostDetail(DetailView): #43. 이렇게 써놓고 확장한다.
         context['categories'] = Category.objects.all()
         context['no_category_post_count'] = Post.objects.filter(category=None).count()
         return context
+
+
+class PostCreate(CreateView): #335. urls.py에서지정한 PostCreate에 대한 내용을 아래와같이 입력한 후, 위에 CreateView(새로운 레코드의 인스턴스를 만들게 하는 기능)를 임포트한다.
+    model = Post
+    fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category'] #336. models.py의 Post에 가서 fields(사용할 필드들)안에 무엇이 있으면 좋겠는가 보고 입력해 넣는다. 337. 이제 blog/post_form.html을 만든다.
 
 
 def category_page(request, slug): #291. category_page의 함수를 아래와같이 작성한다.

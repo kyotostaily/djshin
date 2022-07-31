@@ -1,0 +1,15 @@
+{% extends 'blog/base_full_width.html' %}
+
+{% block head_title%}Create Post - Blog{% endblock %}
+
+{% block main_area %}
+<h1>Create a New Post</h1> <!-- 338. post_list.html에서 1~3의 내용을 가져와 붙인후 위와같이 변경(제목변경가능: 3째줄)하고, 이 줄의 내용을 이와같이 입력(tests.py에 Create a New Post가 있었으므로 입력)한다.-->
+<hr/><!-- 338. 맨 위의 내용은 base_full_width.html로 확장을 하는 내용이다. -->
+
+<form method="post" enctype="multipart/form-data"><!-- 340. multipart/form-data를 입력해야 파일을 보내고 받는다. csrf_token은 보안상 필요한것이다.--> {% csrf_token %}
+    <table> <!-- 339. 아래 form은 views.py의 30째 줄에서 설정한 폼이다.  -->
+        {{ form }}
+    </table>
+    <button type="submit" class="btn btn-primary float-right">Submit</button> <!-- 341. 제출버튼 -->
+</form> <!-- 342. 아래 endblock을 입력하고 base.html을 복사하여 base_full_width.html을 만들고 15째 줄로 이동한다. -->
+{% endblock %}
