@@ -202,11 +202,30 @@ class TestView(TestCase): #113. 이런식으로 TestCase를 확장시켜준다.
         self.assertNotIn(self.post_002.title, main_area.text) #323. 이것들은 없으므로 assertNotIn
         self.assertNotIn(self.post_003.title, main_area.text) #323. 이것들은 없으므로 assertNotIn. 이제 blog/urls.py의 5째줄로 이동한다.
 
-    def test_create_post(self): #327. create_post에 관한 함수
-        response = self.client.get('/blog/create_post/') #328. 이 페이지를 열도록
-        self.assertEqual(response.status_code, 200) #329. 잘 들어갔을때 200이 뜨고
-        soup = BeautifulSoup(response.content, 'html.parser') #330. 읽어온 페이지가 html.parser를 받는다.
+    def test_create_post_without_login(self): #345. test_create_post_without_login로 이름을 바꾼다.
+        response = self.client.get('/blog/create_post/')
+        self.assertNotEqual(response.status_code, 200) #346. 로그인 없이 접근시 200이 되면 안된다.
 
-        self.assertEqual('Create Post - Blog', soup.title.text) #331. 'Create Post - Blog'이 soup.title에 있다.
-        main_area = soup.find('div', id='main-area') #332. id가 main-area인 div를 찾는다.
-        self.assertIn('Create a New Post', main_area.text) #333. 'Create a New Post'라는 단어가 main_area.text안에 있어야 한다. 이제 blog/urls.py의 5째줄로 간다.
+    def test_create_post_with_login(self): #347. 로그인 했을 경우(테스트)
+        self.client.login(username='trump', password='somepassword') #348. 유저네임과 비번 설정된 상태에서
+        response = self.client.get('/blog/create_post/') #349. 이곳으로 잘 가야된다. 이제 views.py의 3째줄로 이동한다.
+
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        self.assertEqual('Create Post - Blog', soup.title.text)
+        main_area = soup.find('div', id='main-area')
+        self.assertIn('Create a New Post', main_area.text)
+
+        self.client.post( #352. 윗 내용에 들어가는 것을 딕셔너리 형태로 아래와 같이 입력한다. 221 ~ 226
+            '/blog/create_post/',
+            {
+                'title': 'Post Form 만들기',
+                'content': 'Post Form 페이지를 만듭시다.'
+            }
+        )
+
+        last_post = Post.objects.last() #356. 맨 마지막 포스트를 가져와라
+        self.assertEqual(last_post.title, 'Post Form 만들기') #357. last_post.title의 내용
+        self.assertEqual(last_post.author.username, 'trump') #358. " "  의 author의 유저네임
+        self.assertEqual(last_post.content, 'Post Form 페이지를 만듭시다.') #359. " "의 내용. 이제 views.py의 33째줄로 간다.
