@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    path('update_post/<int:pk>/', views.PostUpdate.as_view()), #384. tests.py의 239줄에 대한 경로를 지정한다. 그리고 views.py의 45째 줄로 이동한다.
     path('create_post/', views.PostCreate.as_view()), #334. PostCreate에 대한 경로를 지정하고 views.py의 28째 줄로 이동한다.
     path('tag/<str:slug>/', views.tag_page), #324. 이같이 입력하고 views.py의 47째 줄로 이동한다.
     path('category/<str:slug>/', views.category_page), #290. 변수명 slug를 받아온다. 이제 views.py의 맨 아래로 이동한다.

@@ -234,3 +234,42 @@ class TestView(TestCase): #113. 이런식으로 TestCase를 확장시켜준다.
         self.assertEqual(last_post.title, 'Post Form 만들기') #357. last_post.title의 내용
         self.assertEqual(last_post.author.username, 'obama') #372. 스태프가 obama이므로 바꿔준다. 이제 views.py의 29번째줄로 이동한다.
         self.assertEqual(last_post.content, 'Post Form 페이지를 만듭시다.') #359. " "의 내용. 이제 views.py의 33째줄로 간다.
+
+    def test_update_post(self): #378. update_post상황에 대한 테스트코드(238~275)
+        update_post_url = f'/blog/update_post/{self.post_003.pk}/' #379.post_003의 해당 포스트를 들어서 테스트한다는뜻, 383.urls.py의 5째줄에 가서 이것에 대한 경로를 잡아준다.
+
+        # 380.로그인 하지 않은 상태에서 접근 하는 경우
+        response = self.client.get(update_post_url)
+        self.assertNotEqual(response.status_code, 200)
+
+        # 381.로그인은 했지만, 작성자가 아닌 경우
+        self.assertNotEqual(self.post_003.author, self.user_trump) #381. trump는 아니므로 NotEqual
+        self.client.login(username='trump', password='somepassword')
+        response = self.client.get(update_post_url)
+        self.assertNotEqual(response.status_code, 200)
+
+        # 382.작성자(obama)가 접근하는 경우
+        self.assertEqual(self.post_003.author, self.user_obama) #382. 세번째 포스트의 obama이므로 맞으므로 assertEqual이 맞다.
+        self.client.login(username='obama', password='somepassword')
+        response = self.client.get(update_post_url)
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser') #391.soup을 받아준 후
+
+        self.assertEqual('Edit Post - Blog', soup.title.text) #392. Edit Post - Blog로 나오면 좋겠다고 입력후 아래와같이입력(259~275)
+        main_area = soup.find('div', id='main-area')
+        self.assertIn('Edit Post', main_area.text) #393. 이와같이 입력 후, post_form을 복사해서 post_update_form.html을 만들고 views.py의 49째 줄로 이동한다.
+
+        response = self.client.post( #397. 세번째 포스트의 내용(53~57)을 수정하는 것을 테스트 한다.
+            update_post_url,
+            {
+                'title': '세 번째 포스트를 수정했습니다.',
+                'content': '안녕 세계? 우리는 하나!',
+                'category': self.category_music.pk #397. pk를 적어줘야 번호로 찾아준다.
+            },
+            follow=True #398. redirect되는것까지 쫓아가게 하기 위해 입력한다.
+        )
+        soup = BeautifulSoup(response.content, 'html.parser')
+        main_area = soup.find('div', id='main-area')
+        self.assertIn('세 번째 포스트를 수정했습니다.', main_area.text) #399. 위의 내용을 입력해서 이 내용이 있었음 좋겠다.
+        self.assertIn('안녕 세계? 우리는 하나!', main_area.text) #399. 위의 내용을 입력해서 이 내용이 있었음 좋겠다.
+        self.assertIn(self.category_music.name, main_area.text) #399. 위의 내용을 입력해서 이 내용이 있었음 좋겠다. 이제 post_detail.html의 28째 줄로 이동한다.

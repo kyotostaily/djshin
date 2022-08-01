@@ -1,5 +1,6 @@
+from django.core.exceptions import PermissionDenied #390.PermissionDenied를 임포트 한다.
 from django.shortcuts import render, redirect #365. redirect를 임포트한다.
-from django.views.generic import ListView, DetailView, CreateView #335. CreateView를 임포트한다.
+from django.views.generic import ListView, DetailView, CreateView, UpdateView #335. CreateView를 임포트한다. 385.UpdateView임포트
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin #373., UserPassesTestMixin임포트
 from .models import Post, Category, Tag #265. Category를 임포트 시킨다. 325.Tag임포트.
 
@@ -40,6 +41,18 @@ class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView): #373. Log
             return super(PostCreate, self).form_valid(form) #364. 이와 같이 입력하여 원래 받아야 할 기능들은 다 받으면서 363까지의 form을 원래 기본설정으로 보내는 문장.
         else:
             return redirect('/blog/') #365. 로그인을 안했으면 redirect를 사용하여 /blog/로 돌려보낸다. 1째줄에 임포트한다. 이제 tests.py의 18째 줄로 이동한다.
+
+
+class PostUpdate(LoginRequiredMixin, UpdateView): #385.PostUpdate에 대한 내용을 이와 같이(46~55) 입력하고 UpdateView와 ermissionDenied를 위에 임포트한다.
+    model = Post
+    fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category'] #386. 위의 fields와 같이 해준다.
+    template_name = 'blog/post_update_form.html' #394. PostUpdate를 사용하기 위한 템플릿을 이와같이 따로 지정할 수 있다. 이제 post_update_form.html로 이동한다.
+
+    def dispatch(self, request, *args, **kwargs): #387. 서버에 사용자가 요청할때 dispatch는 get방식으로 요청하는지 post방식으로 요청하는지를 구분해 주는 역할을 한다.
+        if request.user.is_authenticated and request.user == self.get_object().author: #388.해당하는 포스트의 권한이 있는 유저인지 확인, UpdateView라는 것은 어떤 특정 db의 레코드(db에서 불러온 인스턴스)에 대해서 수정을 하려할때 사용하는 것인데, 이럴때 하나를 가져오는데, 그 하나를 가져올때, UpdateView에서 get_object()라는 함수를 제공하고 있다. 이때 블로그의 post요소가 하나 가져와 지면, views.py의 'update_post/<int:pk>/'에 따라 pk로 가져와 지는데, 이것을 UpdateView에서 알아서 처리해서 get_object()라는 함수에서 해당하는 pk(여기서는 tests.py의 post_003)에 대한 것을 가져와서 그 안에서 author(models.py에 정의되어 있는)를 가리키면서 지금 로그인 한 사람과 똑같은지 확인한다.
+            return super(PostUpdate, self).dispatch(request, *args, **kwargs) #389. 맞으면 본래 dispatch의 역할을 하도록 이와같이 입력한다.
+        else:
+            raise PermissionDenied #390. 아니면 허가 거부(임포트), tests.py의 256으로 간다.
 
 
 def category_page(request, slug): #291. category_page의 함수를 아래와같이 작성한다.

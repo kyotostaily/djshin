@@ -2,7 +2,7 @@
 
 {% block main_area %} <!-- 154. 아래의 내용을 base.html안에 있는 block main_area 안에 끼워넣겠다는 뜻이다. 맨아래 endblock입력하러 내려간다. base.html안에 끼워넣은 것을 post_list.html이라 생각한다는 것이다. -->
     {% if user.is_authenticated %}
-        {% if user.is_superuser or user.is_staff %} <!-- 377. 로그인 이후, staff인지 superuser인지 확인이 되었다면 부트스트랩(현재 4.6버전)과 폰트어썸에서 양식을 가져오고 아래와같이 a태그로 작성해서(5~8) create_post의 New Post를 쓸수있게 할수있다. &nbsp;는 스페이스 기능을 한다. -->
+        {% if user.is_superuser or user.is_staff %} <!-- 377. 로그인 이후, staff인지 superuser인지 확인이 되었다면 부트스트랩(현재 4.6버전)과 폰트어썸에서 양식을 가져오고 아래와같이 a태그로 작성해서(5~8) create_post의 New Post를 쓸수있게 할수있다. &nbsp;는 스페이스 기능을 한다. 이제 tests.py의 238줄로 간다. -->
             <a type="button" href="/blog/create_post/" class="btn btn-info btn-sm float-right"><i class="fas fa-pen"></i>&nbsp;&nbsp; New Post</a>
         {% endif %}
     {% endif %}
