@@ -222,11 +222,16 @@ class TestView(TestCase): #113. 이런식으로 TestCase를 확장시켜준다.
         main_area = soup.find('div', id='main-area')
         self.assertIn('Create a New Post', main_area.text)
 
+        tag_str_input = main_area.find('input', id='id_tags_str') #404. input태그 중에서 id로 id_tags_str이 있는지 테스트(post_form.html의 14번쨰 줄에 있는 id가 있는지 확인)
+        self.assertTrue(tag_str_input) #405. tag_str_input이 있는지 확인하고
+        self.assertEqual(Tag.objects.count(), 3)
+
         self.client.post( #352. 윗 내용에 들어가는 것을 딕셔너리 형태로 아래와 같이 입력한다. 221 ~ 226
             '/blog/create_post/',
             {
                 'title': 'Post Form 만들기',
-                'content': 'Post Form 페이지를 만듭시다.'
+                'content': 'Post Form 페이지를 만듭시다.',
+                'tags_str': 'new tag; 한글 태그, python' #406. 있으면 이와같이 세개의 태그가 추가가 되도록 입력 해서 시험해본다.(결과적으로, python이라는 태그는 이미 위에 32째줄에 있으니 그대로 있고, 나머지 두개의 태그만 추가된다.) 이것을 post형태로 서버에 보내주게 된다. 이제 243줄로 이동한다.
             }
         )
 
@@ -234,6 +239,12 @@ class TestView(TestCase): #113. 이런식으로 TestCase를 확장시켜준다.
         self.assertEqual(last_post.title, 'Post Form 만들기') #357. last_post.title의 내용
         self.assertEqual(last_post.author.username, 'obama') #372. 스태프가 obama이므로 바꿔준다. 이제 views.py의 29번째줄로 이동한다.
         self.assertEqual(last_post.content, 'Post Form 페이지를 만듭시다.') #359. " "의 내용. 이제 views.py의 33째줄로 간다.
+
+        self.assertEqual(last_post.tags.count(), 3) #407. last_post에 tags는 3개다 라는 뜻
+        self.assertTrue(Tag.objects.get(name='new tag')) #408. 이러한 태그들이 db에 저장이 되어있는지 확인(db에 있다면 가져올 수 있다.)
+        self.assertTrue(Tag.objects.get(name='한글 태그')) #408.
+        self.assertTrue(Tag.objects.get(name='python')) #408.
+        self.assertEqual(Tag.objects.count(), 5) #409.윗쪽에 원래 태그가 3개였는데 태그가 2개가 더 추가 되서 5개가 되었기 때문에 5개인지 확인, 이제 views.py의 410번으로 이동한다.
 
     def test_update_post(self): #378. update_post상황에 대한 테스트코드(238~275)
         update_post_url = f'/blog/update_post/{self.post_003.pk}/' #379.post_003의 해당 포스트를 들어서 테스트한다는뜻, 383.urls.py의 5째줄에 가서 이것에 대한 경로를 잡아준다.

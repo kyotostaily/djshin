@@ -1,5 +1,6 @@
 from django.core.exceptions import PermissionDenied #390.PermissionDenied를 임포트 한다.
 from django.shortcuts import render, redirect #365. redirect를 임포트한다.
+from django.utils.text import slugify #421. slugify임포트
 from django.views.generic import ListView, DetailView, CreateView, UpdateView #335. CreateView를 임포트한다. 385.UpdateView임포트
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin #373., UserPassesTestMixin임포트
 from .models import Post, Category, Tag #265. Category를 임포트 시킨다. 325.Tag임포트.
@@ -29,7 +30,7 @@ class PostDetail(DetailView): #43. 이렇게 써놓고 확장한다.
 
 class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView): #373. LoginRequiredMixin은 로그인될때만 페이지 열리게 하는 기능이며, UserPassesTestMixin(어떤 특수한 사용자만 들어오게 하고싶은 기능)를 추가하고 3째줄에 임포트한다.
     model = Post
-    fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category'] #336. models.py의 Post에 가서 fields(사용할 필드들)안에 무엇이 있으면 좋겠는가 보고 입력해 넣는다. 337. 이제 blog/post_form.html을 만든다.
+    fields = ['title', 'hook_text', 'content', 'head_image', 'file_upload', 'category'] #401. 'tags'를 추가한다. 이제 post_form.html의 12째 줄로 이동한다. #403. 402의 과정을 거쳤으면 'tags'라는 항목을 지운다. 그러면 new post안의 tags의 항목이 사라진다. 이제 tests.py의 225째 줄로 이동한다.
 
     def test_func(self): #374.UserPassesTestMixin을 할 때 이 테스트를 거치게 된다.
         return self.request.user.is_superuser or self.request.user.is_staff #375. superuser이거나 staff 일 때 이 페이지가 열려야 한다는 조건이다.
@@ -37,8 +38,23 @@ class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView): #373. Log
     def form_valid(self, form): #360. CreateView는 form_valid(form의 내용들이 유효한지 검사해주는 기능)라는 기능을 갖고있다. 이를 이용하여(오버라이딩) 아래와 같이(33~39) 입력한다.
         current_user = self.request.user #361. request한 사용자가
         if current_user.is_authenticated and (current_user.is_staff or current_user.is_superuser):#362. 로그인을 했으면 #376. 로그인 되있는지 확인하고, current_user가 staff인지 superuser인지 확인. 이제 post_list.html의 4째줄로 이동한다.
-            form.instance.author = current_user #363. PostCreate에서 만들어진 CreateView가 제공하는 폼에 instance에 채워진 author라는 필드를 currunt_user로 채워라는 뜻
-            return super(PostCreate, self).form_valid(form) #364. 이와 같이 입력하여 원래 받아야 할 기능들은 다 받으면서 363까지의 form을 원래 기본설정으로 보내는 문장.
+            form.instance.author = current_user #363. PostCreate에서 만들어진 CreateView가 제공하는 폼에 instance에 채워진 author라는 필드를 currunt_user로 채워라는 뜻(current_user가 author를 만든 사람이다.)
+            response = super(PostCreate, self).form_valid(form) #410 return을 response = 로 변경한다.
+
+            tags_str = self.request.POST.get('tags_str') #412.서버에서 사람이 submit버튼을 누르면 POST방식으로 전달될거라는 뜻.(html form에 보면 method가 post로 되어있기 때문), 이렇게 POST라는 것을 받아서 그 안에 tags_str이라는게 있는데 그걸 가져와서 여기 담아보라는 의미이다.
+            if tags_str: #413. tags_str이 있는 경우 이와같이(45~47) 입력
+                tags_str = tags_str.strip() #414. strip을 입력함으로 앞 뒤 띄어쓰기에 대한 것을 없애준다.
+                tags_str = tags_str.replace(',', ';') #415. 콤마(,)도 세미콜론(;)으로 바꿔주는 기능
+                tags_list = tags_str.split(';') #416. 스플릿도 세미콜론으로 해주는 기능.
+
+                for t in tags_list: #417. 만약 3개를 입력했으면 그것들이 리스트 형태로 들어오기 때문에 그것을 반영을 해 주기 위한 것. tags_list로 for문을 돌면서 아래와 같이(50~55) 돌게 한다.
+                    t = t.strip() #418.strip을 입력함으로 앞 뒤 띄어쓰기에 대한 것을 없애준다.
+                    tag, is_tag_created = Tag.objects.get_or_create(name=t) #419.get_or_create(name=t): 만약에 name이 t인 것이 있으면 그냥 가져오고, 없으면 그것을 이름이 t인 것으로 새로 만든다음 가져와라 라는 의미, 그래서 하나는 tag:(만들거나 혹은 원래 있었던 것의 결과) is_tag_created(새로만들어진건지 아니면 있던건지) 이렇게 두가지를 리턴한다. 새로 만든다면is_tag_created에 True가 올거고 기존의 것이면 False가 들어온다.
+                    if is_tag_created: #420. 만약 만들어진 것이라면(원래 admin에서 slug가 자동으로 만들어 졌지만, 이 test에서는 자동으로 만든게 아니다.)
+                        tag.slug = slugify(t, allow_unicode=True) #421. 여기서는 자동으로 만든 것이 아니므로, slug라는 태그(models.py의 22째줄에 있는 slug)를 채워줘야 한다. tag.slug는 slugify라는 함수(3째줄에 임포트한다.)가 있고, 여기에 t (admin처럼 slugify를 만들어 달라는 것) 와 allow_unicode=True(한글) 기능을 입력한다.
+                        tag.save() #422. 태그를 저장
+                    self.object.tags.add(tag) #423. for문을 돌때마다 새로 만들어진 tag가 추가된다.
+            return response #411 이것을 입력하면 이전과 똑같아진다. 424.이렇게 된 결과를 response한다.
         else:
             return redirect('/blog/') #365. 로그인을 안했으면 redirect를 사용하여 /blog/로 돌려보낸다. 1째줄에 임포트한다. 이제 tests.py의 18째 줄로 이동한다.
 

@@ -9,6 +9,10 @@
 <form method="post" enctype="multipart/form-data"><!-- 340. multipart/form-data를 입력해야 파일을 보내고 받는다. csrf_token은 보안상 필요한것이다.--> {% csrf_token %}
     <table> <!-- 339. 아래 form은 views.py의 30째 줄에서 설정한 폼이다.  -->
         {{ form }}
+        <tr> <!-- 402. tr은 한줄 더 추가한다는 것이고, td는 한 칸을 의미한다. 12~15와 같이 입력하면 new post를 눌러 들어가면 Tags라는 칸이 하나 더 생긴다. 다시 views.py의 32째 줄로 간다. -->
+            <th><label for="id_tags_str">Tags:</label></th>
+            <td><input type="text" name="tags_str" id="id_tags_str"></td>
+        </tr>
     </table>
     <button type="submit" class="btn btn-primary float-right">Submit</button> <!-- 341. 제출버튼 -->
 </form> <!-- 342. 아래 endblock을 입력하고 base.html을 복사하여 base_full_width.html을 만들고 15째 줄로 이동한다. -->
