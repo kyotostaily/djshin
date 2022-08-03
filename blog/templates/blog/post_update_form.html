@@ -11,6 +11,10 @@
 <form method="post" enctype="multipart/form-data">{% csrf_token %}
     <table>
         {{ form }}
+        <tr> <!-- 431. post_form의 12~15의 내용을 가져와서 붙이고 이와같이 수정한다. 이제 views.py의 73번째 줄로 이동한다.-->
+            <th><label for="id_tags_str">Tags:</label></th>
+            <td><input type="text" name="tags_str" id="id_tags_str" value="{{ tags_str_default }}"></td> <!-- 439. views.py로 부터 tags_str_default인자를 받아와서 이와같이 입력한다. 다시 views.py의 82째 줄로 이동한다. -->
+        </tr>
     </table>
     <button type="submit" class="btn btn-primary float-right">Submit</button>
 </form>

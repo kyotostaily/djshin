@@ -54,7 +54,7 @@ class PostCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView): #373. Log
                         tag.slug = slugify(t, allow_unicode=True) #421. 여기서는 자동으로 만든 것이 아니므로, slug라는 태그(models.py의 22째줄에 있는 slug)를 채워줘야 한다. tag.slug는 slugify라는 함수(3째줄에 임포트한다.)가 있고, 여기에 t (admin처럼 slugify를 만들어 달라는 것) 와 allow_unicode=True(한글) 기능을 입력한다.
                         tag.save() #422. 태그를 저장
                     self.object.tags.add(tag) #423. for문을 돌때마다 새로 만들어진 tag가 추가된다.
-            return response #411 이것을 입력하면 이전과 똑같아진다. 424.이렇게 된 결과를 response한다.
+            return response #411 이것을 입력하면 이전과 똑같아진다. 424.이렇게 된 결과를 response한다. 이제 tests.py의 273줄로 이동한다.
         else:
             return redirect('/blog/') #365. 로그인을 안했으면 redirect를 사용하여 /blog/로 돌려보낸다. 1째줄에 임포트한다. 이제 tests.py의 18째 줄로 이동한다.
 
@@ -69,6 +69,34 @@ class PostUpdate(LoginRequiredMixin, UpdateView): #385.PostUpdate에 대한 내�
             return super(PostUpdate, self).dispatch(request, *args, **kwargs) #389. 맞으면 본래 dispatch의 역할을 하도록 이와같이 입력한다.
         else:
             raise PermissionDenied #390. 아니면 허가 거부(임포트), tests.py의 256으로 간다.
+
+    def get_context_data(self, **kwargs): #432. get_context_data : 추가로 어떠한 데이터를 넘길 수가 있다.
+        context = super(PostUpdate, self).get_context_data() #433. 기본적으로 UpdateView에서 제공하는 context_data기능을 사용하기 위해 이렇게 입력한다. 그래야 기존의 기능을 사용할수 있다.
+        if self.object.tags.exists(): #434. 만약에 가져온 포스트에 태그가 있으면
+            tags_str_list = list() #435. 리스트 형태로 만들고
+            for t in self.object.tags.all(): #436. 포스트의 태그를 다 가져와서 (for 문을 돌려서 tags_str_list.append에 추가로 append를 한다.)
+                tags_str_list.append(t.name) #437. t 즉 태그의 이름을 리스트에 하나씩 다 담는것이다.
+            context['tags_str_default'] = '; '.join(tags_str_list) #438. context['tags_str_default'] : tags_str_default라는 인자를 추가하여, (문자열로 만들기 위해) 위의 리스트에 있는 태그들을 세미콜론 ';'으로 join한다. 그리고 이 추가된 tags_str_default 인자는 post_update_form.html 16째줄에서 받게된다.(이동)
+        return context #439. 그리고 끝에는 이렇게 return context로 마무리한다.
+
+    def form_valid(self, form): #440. UpdateView에서 제공하는 form_vaild 기능을 추가하기 위해서 아래와 같이 입력한다.
+        response = super(PostUpdate, self).form_valid(form)
+        self.object.tags.clear() #441. self.object(게시물)에 달려있는 태그를 다 없앤다(지우는게 아니라 태그와 포스트의 연결을 끊는다)는 의미이다.
+
+        tags_str = self.request.POST.get('tags_str') #442. 위에것의 값을 가져와서
+        if tags_str: #443. (46~56의 내용을 가져와서)그 값이 있으면 아래의 내용(88~99)을 적용시킨다.
+            tags_str = tags_str.strip()
+            tags_str = tags_str.replace(',', ';')
+            tags_list = tags_str.split(';')
+
+            for t in tags_list:
+                t = t.strip()
+                tag, is_tag_created = Tag.objects.get_or_create(name=t)
+                if is_tag_created:
+                    tag.slug = slugify(t, allow_unicode=True)
+                    tag.save()
+                self.object.tags.add(tag)
+        return response #443.
 
 
 def category_page(request, slug): #291. category_page의 함수를 아래와같이 작성한다.

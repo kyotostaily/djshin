@@ -270,17 +270,27 @@ class TestView(TestCase): #113. 이런식으로 TestCase를 확장시켜준다.
         main_area = soup.find('div', id='main-area')
         self.assertIn('Edit Post', main_area.text) #393. 이와같이 입력 후, post_form을 복사해서 post_update_form.html을 만들고 views.py의 49째 줄로 이동한다.
 
+        tag_str_input = main_area.find('input', id='id_tags_str') #425. tag가 있는 문서인 경우에 Edit Post에 tag가 input에 있는지 확인하는 내용(225줄과 똑같다.)
+        self.assertTrue(tag_str_input) #425.
+        self.assertIn('파이썬 공부; python', tag_str_input.attrs['value']) #426. 파이썬 공부, python이라는 태그가 있는지 확인하고(왜냐면 post_003에 이 두가지 태그가 있게 설정해 놓았기 때문), tag_str_input의 value에 있었으면 좋겠다는 내용.
+
         response = self.client.post( #397. 세번째 포스트의 내용(53~57)을 수정하는 것을 테스트 한다.
             update_post_url,
             {
                 'title': '세 번째 포스트를 수정했습니다.',
                 'content': '안녕 세계? 우리는 하나!',
-                'category': self.category_music.pk #397. pk를 적어줘야 번호로 찾아준다.
+                'category': self.category_music.pk, #397. pk를 적어줘야 번호로 찾아준다.
+                'tags_str': '파이썬 공부; 한글 태그, some tag' #427. 파이썬 공부 라는 태그는 그대로 있고, 한글 태그 및 some tag 라는 태그가 추가된 상황이다.
             },
-            follow=True #398. redirect되는것까지 쫓아가게 하기 위해 입력한다.
+            follow=True #428. 위의 내용처럼 수정이 된 상태에서 여기까지 오면, post_detail.html로 넘어 가야한다.
         )
         soup = BeautifulSoup(response.content, 'html.parser')
         main_area = soup.find('div', id='main-area')
         self.assertIn('세 번째 포스트를 수정했습니다.', main_area.text) #399. 위의 내용을 입력해서 이 내용이 있었음 좋겠다.
         self.assertIn('안녕 세계? 우리는 하나!', main_area.text) #399. 위의 내용을 입력해서 이 내용이 있었음 좋겠다.
         self.assertIn(self.category_music.name, main_area.text) #399. 위의 내용을 입력해서 이 내용이 있었음 좋겠다. 이제 post_detail.html의 28째 줄로 이동한다.
+
+        self.assertIn('파이썬 공부', main_area.text) #429. 태그가 수정된 상태에서 있어야 하니 assertIn
+        self.assertIn('한글 태그', main_area.text) #429.
+        self.assertIn('some tag', main_area.text) #429.
+        self.assertNotIn('python', main_area.text) #430. 태그가 수정된 상태에서는 없어야 하니 assertNotIn. 이제 post_update_form.html의 14째줄로 이동한다.
