@@ -96,7 +96,7 @@ class PostUpdate(LoginRequiredMixin, UpdateView): #385.PostUpdate에 대한 내�
                     tag.slug = slugify(t, allow_unicode=True)
                     tag.save()
                 self.object.tags.add(tag)
-        return response #443.
+        return response #443. django-crispy-forms 사이트로 가서 pip install django-crispy-forms를 찾아서 인스톨(가상환경이 열린 상황에서)한다. #444. 이제 settings.py의42째 줄로 이동한다.
 
 
 def category_page(request, slug): #291. category_page의 함수를 아래와같이 작성한다.

@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions', #206. extensions를 설치했기 때문에 여기에 이렇게 입력을 해 준다. 이후 python manage.py shell_plus를 입력해본다. 이제 tests.py의 19번째 줄로 이동한다.
 
+    'crispy_forms', #445. django-crispy-forms의 설치 가이드에 나온대로 이와같이 입력한다. 이제 130줄로 이동한다.
+
     'blog',
     'single_pages',
 ]
@@ -124,3 +126,5 @@ STATIC_URL = '/static/' #74.여기에 접근할 수 있게 해 줘라 라고 정
 
 MEDIA_URL = '/media/' #75.url이 media 라고 오는 경우 media 파일을 가져오라는 거구나 라고 인식
 MEDIA_ROOT = os.path.join(BASE_DIR, '_media') #76.파일이 저장되는 경로를 잡아준다. BASE_DIR 뒤에다가 _media를 붙이면 파일을 저장하겠다는 뜻, blog/models.py로 이동한다.
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4' #446. django-crispy-forms의 Template packs에서 CRISPY_TEMPLATE_PACK = 'uni_form' 라는 문장을 복사해서 붙여넣고, 현재는 부트스트랩을 쓰므로 이와같이 입력한다. 447. 이제 crispy사이트 내의 crispy filter로 이동해서 {% load crispy_forms_tags %}을 복사해서 post_form.html의 2째줄에 붙인다.

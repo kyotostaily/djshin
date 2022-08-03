@@ -1,5 +1,5 @@
 {% extends 'blog/base_full_width.html' %}
-
+{% load crispy_forms_tags %}
 {% block head_title%}Create Post - Blog{% endblock %}
 
 {% block main_area %}
@@ -7,12 +7,12 @@
 <hr/><!-- 338. 맨 위의 내용은 base_full_width.html로 확장을 하는 내용이다. -->
 
 <form method="post" enctype="multipart/form-data"><!-- 340. multipart/form-data를 입력해야 파일을 보내고 받는다. csrf_token은 보안상 필요한것이다.--> {% csrf_token %}
-    <table> <!-- 339. 아래 form은 views.py의 30째 줄에서 설정한 폼이다.  -->
-        {{ form }}
-        <tr> <!-- 402. tr은 한줄 더 추가한다는 것이고, td는 한 칸을 의미한다. 12~15와 같이 입력하면 new post를 눌러 들어가면 Tags라는 칸이 하나 더 생긴다. 다시 views.py의 32째 줄로 간다. -->
-            <th><label for="id_tags_str">Tags:</label></th>
-            <td><input type="text" name="tags_str" id="id_tags_str"></td>
-        </tr>
+    <table> <!-- 448. 위의 2째줄같이 붙여넣고 아래와 같이 {{ form | crispy }}로 입력한다. | crispy로 감싼 순간 div로 감싸진다. -->
+        {{ form | crispy }}
+        <div id="div_id_tags_str"> <!-- 449. tr을 이와같이 바꿔준다. (12, 15)-->
+            <label for="id_tags_str">Tags:</label> <!-- 450. th로 감싼것을 없앤다. -->
+            <input type="text" name="tags_str" id="id_tags_str" class="textinput textInput form-control"> <!-- 451. td로 감싼 것을 없애고 New Post를 누르고 들어가서 ctr+U를 누르고 들어간 후, 그 안의 class="form-group"의 107줄에 있는 class의 내용을 복사해와서 이같이 입력하고 post_update_form.html로 가서 여기에서의 2, 11~15의 내용을 거기서도 동일하게 설정한다. post_update_form.html의 2째줄로 이동. -->
+        </div>
     </table>
     <button type="submit" class="btn btn-primary float-right">Submit</button> <!-- 341. 제출버튼 -->
 </form> <!-- 342. 아래 endblock을 입력하고 base.html을 복사하여 base_full_width.html을 만들고 15째 줄로 이동한다. -->

@@ -1,5 +1,5 @@
 {% extends 'blog/base_full_width.html' %}
-
+{% load crispy_forms_tags %}
 {% block head_title%}Edit Post - Blog{% endblock %} <!-- 395. 이와같이 수정한다. -->
 
 {% block main_area %}
@@ -10,11 +10,11 @@
 
 <form method="post" enctype="multipart/form-data">{% csrf_token %}
     <table>
-        {{ form }}
-        <tr> <!-- 431. post_form의 12~15의 내용을 가져와서 붙이고 이와같이 수정한다. 이제 views.py의 73번째 줄로 이동한다.-->
-            <th><label for="id_tags_str">Tags:</label></th>
-            <td><input type="text" name="tags_str" id="id_tags_str" value="{{ tags_str_default }}"></td> <!-- 439. views.py로 부터 tags_str_default인자를 받아와서 이와같이 입력한다. 다시 views.py의 82째 줄로 이동한다. -->
-        </tr>
+        {{ form | crispy }}
+        <div id="div_id_tags_str"> <!-- 431. post_form의 12~15의 내용을 가져와서 붙이고 이와같이 수정한다. 이제 views.py의 73번째 줄로 이동한다.-->
+            <label for="id_tags_str">Tags:</label>
+            <input type="text" name="tags_str" id="id_tags_str" class="textinput textInput form-control" value="{{ tags_str_default }}"> <!-- 439. views.py로 부터 tags_str_default인자를 받아와서 이와같이 입력한다. 다시 views.py의 82째 줄로 이동한다. #452. 앞서 post_form.html의 내용과 동일하게 설정하고 value앞에 class를 붙인다. -->
+        </div>
     </table>
     <button type="submit" class="btn btn-primary float-right">Submit</button>
 </form>
