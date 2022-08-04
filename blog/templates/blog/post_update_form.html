@@ -13,7 +13,7 @@
         {{ form | crispy }}
         <div id="div_id_tags_str"> <!-- 431. post_form의 12~15의 내용을 가져와서 붙이고 이와같이 수정한다. 이제 views.py의 73번째 줄로 이동한다.-->
             <label for="id_tags_str">Tags:</label>
-            <input type="text" name="tags_str" id="id_tags_str" class="textinput textInput form-control" value="{{ tags_str_default }}"> <!-- 439. views.py로 부터 tags_str_default인자를 받아와서 이와같이 입력한다. 다시 views.py의 82째 줄로 이동한다. #452. 앞서 post_form.html의 내용과 동일하게 설정하고 value앞에 class를 붙인다. -->
+            <input type="text" name="tags_str" id="id_tags_str" class="textinput textInput form-control" value="{{ tags_str_default }}"> <!-- 439. views.py로 부터 tags_str_default인자를 받아와서 이와같이 입력한다. 다시 views.py의 82째 줄로 이동한다. #452. 앞서 post_form.html의 내용과 동일하게 설정하고 value앞에 class를 붙인다. #453. 이제 Django Markdownx사이트에 가서 pip install django-markdownx를 복사해서 인스톨을 한다. 다 되면 사이트 안의 Next를 누른다. 그리고 settings.py의 43번째 줄로 이동한다. -->
         </div>
     </table>
     <button type="submit" class="btn btn-primary float-right">Submit</button>

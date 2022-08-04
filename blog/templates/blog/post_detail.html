@@ -43,7 +43,7 @@
 
 
     <!-- Post Content -->
-    <p>{{ post.content }}</p> <!-- 69. 이전 내용 다 지우고 이렇게 바꾼다.-->
+    <p>{{ post.get_content_markdown | safe }}</p> <!-- 460. get_content_markdown : models.py에서 self.content를 markdown함수로 처리한 결과를 받아서 뿌려준다는 것이다. (| safe)는 게시글의 html코드를 처리 및 적용(html escaping)해 준다. 이제 post_list.html의 41줄로 이동한다. -->
     <!-- 319. 태그 사용을 위해 아래와 같이 post_list에서 내용(33~40)을 가져와 복사하여 붙여넣은 후 p를 post로 바꾼다. 이제 tests.py의 맨 아래(189)로 이동한다. -->
     {% if post.tags.exists %}
         <i class="fas fa-tags"></i>

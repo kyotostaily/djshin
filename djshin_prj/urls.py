@@ -22,6 +22,7 @@ from django.conf.urls.static import static #82. 이같이 입력해서 static까
 urlpatterns = [
     path('blog/', include('blog.urls')), #2. blog.urls에 가서 처리를 해라
     path('admin/', admin.site.urls), #1. 관리자 페이지의 url로 가라(기본제공)
+    path('markdownx/', include('markdownx.urls')), #455. Markdownx사이트에서 urls.py의 내용을 찾아서 이와같이 복사해서 붙여넣는다. 그리고 이 내용 아래의 Next를 누르면서 다음 페이지로 넘어간다. 이제 models.py의 36째 줄로 넘어간다.
     path('', include('single_pages.urls')), #20. 아무것도 없을 때('')는 single_pages만 보여주는 것만 남겨놓고 blog.urls에 있는 것을 복사해서 single_pages에 붙여넣는다.
 ]
 

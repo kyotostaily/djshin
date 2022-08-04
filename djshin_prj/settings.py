@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django_extensions', #206. extensions를 설치했기 때문에 여기에 이렇게 입력을 해 준다. 이후 python manage.py shell_plus를 입력해본다. 이제 tests.py의 19번째 줄로 이동한다.
 
     'crispy_forms', #445. django-crispy-forms의 설치 가이드에 나온대로 이와같이 입력한다. 이제 130줄로 이동한다.
+    'markdownx', #454. 이렇게 붙여넣고 djshin_prj/urls.py에 간다.
 
     'blog',
     'single_pages',

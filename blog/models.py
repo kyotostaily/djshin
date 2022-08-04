@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User #181. User의 사용을 위해 임포트 한다.
 import os #95. 파일 이름을 가져오기 위해 import os 패키지를 입력한다.
+from markdownx.utils import markdown #459.
+from markdownx.models import MarkdownxField #457.
 
 
 class Category(models.Model): #194. 카테고리 항목에 대한 설정
@@ -31,7 +33,7 @@ class Tag(models.Model):  #298. 6~14의 내용을 복사해서 붙여넣고 Tag�
 class Post(models.Model):
     title = models.CharField(max_length=50)
     hook_text = models.CharField(max_length=100, blank=True) #108. hook_text(요약문:이름은 자기맘대로) 109.이제 cmder에서 migration(인식)과 migrate(반영)를 한다. 이제 templates파일 수정을 위해 post_list.html(95째줄)로 간다.
-    content = models.TextField()
+    content = MarkdownxField() #456. 마크다운 적용을 위해서 사이트를 참고하여 이와같이 변경하고 #457. 이것을 임포트하고 pip uninstall django -> pip install django==3.2로 다운그레이드 후 makemigrations를 하고 migrate를 한다. 이제 post_form.html의 19줄로 간다.
 
     head_image = models.ImageField(upload_to='blog/images/%Y/%m/%d/', blank=True) #77. head_image(게시물 맨 위의 이미지)를 넣을수 있도록 이렇게 입력한다.blank=True의 의미는 공백을 검사하지 않는다는 것이다. 즉 여기서는 이미지가 있을수도 없을수도 있게 하는것이다. 78. 이후 cmder에서 pip install Pillow(파이썬에서 이미지를 다룰수 있게 하는 패키지)로 설치하고 79. python manage.py makemigrations를 실행하면서 데이터베이스에 변화가 있다는 것을 알려주고 80. python manage.py migrate를 입력해서 데이터에 반영을 한다. 81. 이후 서버를 열어서 admin에서 이미지 파일 게시글에 추가해서 세이브 하면서 테스트 해 본다. 그러면 _media폴더 안에 년월일 폴더가 생기면서 이미지 파일이 저장이 된다. 이제 djshin_prj의 urls.py로 이동한다.
     file_upload = models.FileField(upload_to='blog/files/%Y/%m/%d/', blank=True) #87. 파일 업로드를 위해 이렇게 입력한 후 cmder에서 python manage.py makemigrations를 한 후 python manage.py migrate를 해서 반영하고 admin 들어가서 파일을 저장해보며 테스트한다. 이후 blog/post_list.html로 이동한다.
@@ -54,3 +56,6 @@ class Post(models.Model):
 
     def get_file_ext(self): #99. 확장자만 가져오는 함수
         return self.get_file_name().split('.')[-1] #100. '.' 으로 스플릿을 해서 맨 마지막에 확장자[-1]를 가져온다. 그리고 post_detail로 이동한다.
+
+    def get_content_markdown(self): #459. content를 마크다운 형식으로 바꿔주는 함수이며 임포트를 해준다. 이제 post_detail.html의 46째 줄로 간다.
+        return markdown(self.content)
