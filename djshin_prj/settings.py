@@ -38,6 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions', #206. extensions를 설치했기 때문에 여기에 이렇게 입력을 해 준다. 이후 python manage.py shell_plus를 입력해본다. 이제 tests.py의 19번째 줄로 이동한다.
+    'django.contrib.sites', #463. django-allauth에서 찾아서 붙인다.
+
+    'allauth', #464.이것들을 복사해서 붙인다.
+    'allauth.account', #464.
+    'allauth.socialaccount', #464.
+    'allauth.socialaccount.providers.google', #465. 구글 아이디로 로그인 할 경우(다른건 그에 맞는것 찾아서 붙이면 된다.) 이제 139줄로 이동한다.
 
     'crispy_forms', #445. django-crispy-forms의 설치 가이드에 나온대로 이와같이 입력한다. 이제 130줄로 이동한다.
     'markdownx', #454. 이렇게 붙여넣고 djshin_prj/urls.py에 간다.
@@ -129,3 +135,18 @@ MEDIA_URL = '/media/' #75.url이 media 라고 오는 경우 media 파일을 가�
 MEDIA_ROOT = os.path.join(BASE_DIR, '_media') #76.파일이 저장되는 경로를 잡아준다. BASE_DIR 뒤에다가 _media를 붙이면 파일을 저장하겠다는 뜻, blog/models.py로 이동한다.
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4' #446. django-crispy-forms의 Template packs에서 CRISPY_TEMPLATE_PACK = 'uni_form' 라는 문장을 복사해서 붙여넣고, 현재는 부트스트랩을 쓰므로 이와같이 입력한다. 447. 이제 crispy사이트 내의 crispy filter로 이동해서 {% load crispy_forms_tags %}을 복사해서 post_form.html의 2째줄에 붙인다.
+
+AUTHENTICATION_BACKENDS = [ #466. django-allauth에서 이 내용들(139~145)을 찾아서 붙인다. 이제 templates를 수정하러 67줄로 이동한다(그러나 확인결과 수정할 내용이 없으므로 가지않는다.) 이제 147줄로 이동한다.
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SITE_ID = 1 #467. 찾아서 복사해 붙여넣는다.
+
+ACCOUNT_EMAIL_REQUIRED = True #468. 이메일 주소를 받아올껀가
+ACCOUNT_EMAIL_VERIFICATION = 'none' #469. 회원가입시 이메일을 보내서 확인하려는것, 지금은 안하므로 none으로 한다. 이제djshin/urls.py의 26째 줄로 이동한다.
+
+LOGIN_REDIRECT_URL = '/blog/' #475. 로그인하면 이 페이지로 오게된다. 대문페이지로 설정하고 싶으면 '/'으로 한다. 이제 navbar.html의 34줄로 이동한다.

@@ -38,7 +38,7 @@
         {% if p.hook_text %} <!-- 110. hook_text 사용을 위해 endif 문까지 아래와 같이 입력한다. (if문. 만약에 hook_text가 있을때)-->
         <h5 class="text-muted">{{ p.hook_text }}</h5> <!-- 111. hook_text문이 있으면 보여주는 것, class="text-muted"는 텍스트가 살짝 흐릿하게 된다. 이제 post_detail.html(62째줄)로 가서 수정한다.-->
         {% endif %}
-        <p class="card-text">{{ p.get_content_markdown | truncatewords_html:45 | safe }}</p> <!-- 461. 마크다운 적용을 위해 이와같이 변경한다. -->
+        <p class="card-text">{{ p.get_content_markdown | truncatewords_html:45 | safe }}</p> <!-- 461. 마크다운 적용을 위해 이와같이 변경한다. 462.이제 django-allauth의 페이지를 연 후 pip install django-allauth를 복사해서 (가상환경 켜진 상태에서) 설치한다. 이제 setting.py로 간다. -->
         <!-- 317. 태그가 나오게끔 if, endif문을 아래와같이 입력한다. 이후 tests.py의 170째 줄로 이동한다. -->
        {% if p.tags.exists %}
                 <i class="fas fa-tags"></i> <!-- 폰트어썸의 태그 아이콘을 찾아 붙인다. 아래의 iterator는 서버의 부담을 줄여준다.-->
