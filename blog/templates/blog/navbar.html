@@ -31,7 +31,7 @@
                         </div>
                     </li>
                 {% else %}
-                    <li class="nav-item"> <!-- 478.로그인이 되면 여기 문장(45~46) 즉 로그인 버튼은 나오지 않는다. -->
+                    <li class="nav-item"> <!-- 478.로그인이 되면 여기 문장(45~46) 즉 로그인 버튼은 나오지 않는다. 이제 57줄로 이동한다.-->
                         <a class="nav-link" href="#" data-toggle="modal" data-target="#loginModal">Log In</a>
                     </li>
                 {% endif %}
@@ -54,10 +54,10 @@
                 <div class="row">
                     <div class="col-md-6 col-sm-12">
                         <a role="button" href="{% provider_login_url 'google' %}" type="button" class="btn btn-outline-dark btn-block btn-sm"><i class="fab fa-google"></i> Log in with Google</a> <!-- 474.구글로그인을 위해 이와같이 입력하고 admin -> Social applications -> Add social application -> provider: Google, Name: google, Client id와 Secret key 찾아서 붙여넣고 아래에 있는 127.0.0.1:8000 선택해서 오른쪽으로 보내고 save. 이제 settings.py의 152줄로 이동한다.  -->
-                        <button type="button" class="btn btn-outline-dark btn-block btn-sm"><i class="far fa-user"></i> Log in with username</button>
+                        <a role="button" href="/accounts/login/" type="button" class="btn btn-outline-dark btn-block btn-sm"><i class="far fa-user"></i> Log in with username</a> <!-- 479. 다른이메일로 회원가입 한 유저네임 로그인을 위한 변경 -->
                     </div>
                     <div class="col-md-6 col-sm-12">
-                        <button type="button" class="btn btn-outline-dark btn-block btn-sm"><i class="far fa-envelope"></i> Sign up with E-mail</button>
+                        <a role="button" href="/accounts/signup/" type="button" class="btn btn-outline-dark btn-block btn-sm"><i class="far fa-envelope"></i> Sign up with E-mail</a> <!-- 480. 다른 이메일로 회원가입을 위한 변경 -->
                     </div>
                 </div>
             </div>
