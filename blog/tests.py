@@ -184,6 +184,52 @@ class TestView(TestCase): #113. 이런식으로 TestCase를 확장시켜준다.
         self.assertIn(self.comment_001.author.username, comment_001_area.text) #494. 작성자 이름이 있었으면 좋겠다.
         self.assertIn(self.comment_001.content, comment_001_area.text) #495. 작성한 content가 있었으면 좋겠다. 여기까지 입력하고, post_detail.html의 92째 줄로 이동한다.
 
+    def test_comment_form(self): #498. 댓글폼에 대한 테스트 함수를 만든다.(187~231)
+        self.assertEqual(Comment.objects.count(), 1) #498. 현재 post_001에 comment의 수가 1개 있다.
+        self.assertEqual(self.post_001.comment_set.count(), 1)
+
+        #499. 로그인 하지 않은 상태
+        response = self.client.get(self.post_001.get_absolute_url()) #499. post_001에 대한 url을 가져온다.
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser') #499. 이렇게 해야 beautifulsoup으로 뭔가를 볼수있다.
+
+        comment_area = soup.find('div', id='comment-area')
+        self.assertIn('Log in and leave a comment', comment_area.text) #499. 이 comment_area.text 안에 이 맨트가 있어야 된다.
+        self.assertFalse(comment_area.find('form', id='comment-form')) #499. 로긴하지 않은 상태에서는 from이 없어야 한다. 이제 post_detail.html의 83번째 줄로 간다.
+
+        #503. 로그인 한 상태
+        self.client.login(username='obama', password='somepassword')
+        response = self.client.get(self.post_001.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        comment_area = soup.find('div', id='comment-area')
+        self.assertNotIn('Log in and leave a comment', comment_area.text) #504. 이 문구가 있으면 안된다.
+
+        comment_form = comment_area.find('form', id='comment-form')
+        self.assertTrue(comment_form.find('textarea', id='id_content')) #505. comment-form안에 textarea가 있고 id는 id_contnent이다.
+        response = self.client.post( #506. get이 아닌 post방식으로 한다.
+            self.post_001.get_absolute_url() + 'new_comment/',
+            {
+                'content': '오바마의 댓글입니다.'
+            },
+            follow=True
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(Comment.objects.count(), 2) #507. comment가 2개가 저장이 되있는지 확인
+        self.assertEqual(self.post_001.comment_set.count(), 2)
+
+        new_comment = Comment.objects.last() #508. 맨 마지막에 저장된 comment를 가져온다.
+        soup = BeautifulSoup(response.content, 'html.parser')
+        self.assertIn(new_comment.post.title, soup.title.text) #509. new_comment의 post의 title에 댓글의 title이 상단에 있었으면 좋겠다는 뜻
+
+        comment_area = soup.find('div', id='comment-area')
+        new_comment_div = comment_area.find('div', id=f'comment-{new_comment.pk}') #510. post_detail.html에 이 내용이 있는지 확인
+        self.assertIn('obama', new_comment_div.text) #511. 작성자 이름이 있는지 확인
+        self.assertIn('오바마의 댓글입니다', new_comment_div.text) #512. 작성한 내용이 있는지 확인. 이제 blog/forms.py를 만들고 이동한다.
+
     def test_category_page(self): #278. category_page의 테스트코드를 작성한다.
         response = self.client.get(self.category_programming.get_absolute_url()) #279 해당하는 카테고리에 absolute_url을 통해서 가도록 만든다.
         self.assertEqual(response.status_code, 200) #280. 잘나오는지 200인지 확인하고,

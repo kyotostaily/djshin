@@ -71,5 +71,5 @@ class Comment(models.Model): #481. 댓글에 관한 내용을 아래와 같이(6
     def __str__(self): #487. admin에서 어떻게 보이게 할 것인가에 대한 함수
         return f'{self.author}::{self.content}' #488. 작성자가 누구고 내용이 무엇인지 보여준다. 이제 makemigrations 이후 migrater를 한다. 이제 admin.py의 2째줄로 간다.
 
-    def get_absolute_url(self): #497. 포스트로 이동해와서 self.pk에 따른 곳으로 이동한다. 이 내용은 post_detail.html의 95번째 줄의 내용을 보고 움직인다.
+    def get_absolute_url(self): #497. 포스트로 이동해와서 self.pk에 따른 곳으로 이동한다. 이 내용은 post_detail.html의 95번째 줄의 내용을 보고 움직인다. 이제 tests.py의
         return f'{self.post.get_absolute_url()}#comment-{self.pk}'

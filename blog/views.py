@@ -1,9 +1,10 @@
 from django.core.exceptions import PermissionDenied #390.PermissionDenied를 임포트 한다.
-from django.shortcuts import render, redirect #365. redirect를 임포트한다.
+from django.shortcuts import render, redirect, get_object_or_404 #518. get_object_or_404임포트
 from django.utils.text import slugify #421. slugify임포트
 from django.views.generic import ListView, DetailView, CreateView, UpdateView #335. CreateView를 임포트한다. 385.UpdateView임포트
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin #373., UserPassesTestMixin임포트
 from .models import Post, Category, Tag #265. Category를 임포트 시킨다. 325.Tag임포트.
+from .forms import CommentForm #515. CommentForm임포트
 
 #39. ListView를 확장해서 model을 어떤 모델을 쓸것인지 정의하고(model = Post), ordering을 바꿔주면 된다. 그리고 파일명도 post_list.html로 바꿔준다.
 class PostList(ListView): #38. 리스트를 보여주고 싶으면 이렇게 모델명만 적어주면 된다.
@@ -25,6 +26,7 @@ class PostDetail(DetailView): #43. 이렇게 써놓고 확장한다.
         context = super(PostDetail, self).get_context_data()
         context['categories'] = Category.objects.all()
         context['no_category_post_count'] = Post.objects.filter(category=None).count()
+        context['comment_form'] = CommentForm #515. forms.py의 내용이 여기에 씌워지게 하는 내용(7째줄에 임포트 한다.) 이제 urls.py의 9째줄로 이동한다.
         return context
 
 
@@ -133,3 +135,20 @@ def tag_page(request, slug): #325. tag_page에 대한 함수를 바로위에서 
             'tag': tag
         }
     )
+
+
+def new_comment(request, pk): #517. new_comment에 대한 함수를 입력한다.(141~155)
+    if request.user.is_authenticated:
+        post = get_object_or_404(Post, pk=pk) #518. get_object_or_404(pk의 넘버가 존재하지 않을때 404에러를 던져준다.)를 임포트한다.
+
+        if request.method == 'POST': #519. request.method가 POST인 경우에만
+            comment_form = CommentForm(request.POST)
+            if comment_form.is_valid(): #520. 이런 형식(폼)이 잘 되어있는지 점검
+                comment = comment_form.save(commit=False) #521. 일단 아직 여기서 저장하지 말고
+                comment.post = post
+                comment.author = request.user
+                comment.save() #522. 위의 내용이 다 차면 저장한다.
+                return redirect(comment.get_absolute_url()) #523. 저장했으니 그 위치가 뜬다.
+        return redirect(post.get_absolute_url()) #524. POST가 아니거나 폼이 아닌경우에는 redirect
+    else:
+        raise PermissionError

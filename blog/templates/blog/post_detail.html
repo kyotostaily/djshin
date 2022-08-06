@@ -1,7 +1,7 @@
 {% extends 'blog/base.html' %} <!-- 157. post_list.html의 1~3열의 것을 복사해서 붙이고 맨 아래에 endblock을 한다. -->
-<!-- 160. 아래 3줄을 입력하고 tests.py 73째줄로 이동한다. -->
+{% load crispy_forms_tags %} <!-- 502. 87줄의 내용을 사용하기 위해 이와같이 입력한다. crispy_forms는 예뻐진 창을 볼수 있게한다. 다시 tests.py의 200번째 줄로 간다.-->
 {% block head_title %}
-{{ post.title }} | Blog
+    {{ post.title }} | Blog
 {% endblock %}
 
 {% block main_area %}
@@ -79,13 +79,18 @@
     <!-- Comments Form -->
     <div class="card my-4">
         <h5 class="card-header">Leave a Comment:</h5>
-        <div class="card-body">
-            <form>
+        <div class="card-body"> <!-- 500. 83~93까지 이와같이 내용을 수정한다. (83~90:로그인 된 경우)(91~93:로그인 안된경우) -->
+            {% if user.is_authenticated %}
+            <form id="comment-form" method="POST" action="{{ post.get_absolute_url }}new_comment/">
+                {% csrf_token %}
                 <div class="form-group">
-                    <textarea class="form-control" rows="3"></textarea>
+                    {{ comment_form | crispy }}
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
+            {% else %}
+                <a role="button" type="button" class="btn btn-outline-dark btn-block btn-sm" href="#" data-toggle="modal" data-target="#loginModal">Log in and leave a comment</a> <!-- 501. navbar.html의 35째줄의 내용을 복사해와서 붙이고 이와같이 수정한다. class가 디자인 요소를 만들어 주는데 여기서 btn은 버튼을 뜻하고, outline-dark:까만테두리, btn-block은 끝까지 채워짐을 뜻한다. 이제 2째줄로 간다. -->
+            {% endif %}
         </div>
     </div>
 
@@ -101,6 +106,7 @@
     </div>
     {% endfor %}
     {% endif %}
+
 
 </div>
 {% endblock %}
