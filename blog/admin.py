@@ -1,7 +1,8 @@
 from django.contrib import admin
-from .models import Post, Category, Tag #199 Category추가 304. Tag를 임포트 한다.
+from .models import Post, Category, Tag, Comment #489. Comment를 임포트 하고, 5줄로 이동한다.
 
 admin.site.register(Post)
+admin.site.register(Comment) #490. Comment사용을 위해 이와같이 입력한다. 이제 tests.py의 4째 줄로 이동한다.
 
 
 class CategoryAdmin(admin.ModelAdmin): #200. admin의 modelAdmin

@@ -1,7 +1,7 @@
 from django.test import TestCase, Client #118. Client입력
 from django.contrib.auth.models import User #185. models.py에 가서 User의 사용을 위해 복사해서 붙여넣는다.
 from bs4 import BeautifulSoup #119.
-from .models import Post, Category, Tag #120. models도 가져와야 하기에 임포트한다. 208. Category를 임포트한다. 305. Tag를 임포트한다.
+from .models import Post, Category, Tag, Comment #491. Comment임포트 후 61줄로 이동한다.
 
 
 class TestView(TestCase): #113. 이런식으로 TestCase를 확장시켜준다.
@@ -57,6 +57,12 @@ class TestView(TestCase): #113. 이런식으로 TestCase를 확장시켜준다.
         )
         self.post_003.tags.add(self.tag_python_kor) #310. 위에 29, 32에 입력했던 태그들을 이곳에 입력한다.
         self.post_003.tags.add(self.tag_python) #310. 위에 29, 32에 입력했던 태그들을 이곳에 입력한다. 이제 110줄로 이동한다.
+
+        self.comment_001 = Comment.objects.create( #492. post_001에 댓글을 다는 테스트 구문을 아래와같이(61~65) 입력하고 (modelds.py의 68~69를 보면 작성일과 수정일은 자동으로 생성된다. 그러므로 여기에는 추가하지 않는다.) 이제 182줄로 이동한다.
+            post=self.post_001,
+            author=self.user_obama,
+            content='첫 번째 댓글입니다.'
+        )
 
     def navbar_test(self, soup): #167.def navbar_test 의 내용을 아래와같이 입력한다. test_라는 단어가 앞에 오면 TestCase에서 하나의 유닛단위로 보기 떄문에 navbar를 먼저 쓴다.
         navbar = soup.nav #168. 이 soup이 있어야 복사한 내용을 쓸 수 있다.
@@ -172,6 +178,11 @@ class TestView(TestCase): #113. 이런식으로 TestCase를 확장시켜준다.
         self.assertIn(self.tag_hello.name, post_area.text) #318. 110~112의 내용을 복사해서 붙이고, post_area로 변경하여 테스트한다.
         self.assertNotIn(self.tag_python.name, post_area.text) #318
         self.assertNotIn(self.tag_python_kor.name, post_area.text) #318. 이후 post_detail.html의 45째줄로 이동한다.
+
+        comments_area = soup.find('div', id='comment-area') #493. post_detail상의 기능을 테스트하기 위해 입력(182~185)
+        comment_001_area = comments_area.find('div', id='comment-1')
+        self.assertIn(self.comment_001.author.username, comment_001_area.text) #494. 작성자 이름이 있었으면 좋겠다.
+        self.assertIn(self.comment_001.content, comment_001_area.text) #495. 작성한 content가 있었으면 좋겠다. 여기까지 입력하고, post_detail.html의 92째 줄로 이동한다.
 
     def test_category_page(self): #278. category_page의 테스트코드를 작성한다.
         response = self.client.get(self.category_programming.get_absolute_url()) #279 해당하는 카테고리에 absolute_url을 통해서 가도록 만든다.

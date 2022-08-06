@@ -59,3 +59,17 @@ class Post(models.Model):
 
     def get_content_markdown(self): #459. content를 마크다운 형식으로 바꿔주는 함수이며 임포트를 해준다. 이제 post_detail.html의 46째 줄로 간다.
         return markdown(self.content)
+
+
+class Comment(models.Model): #481. 댓글에 관한 내용을 아래와 같이(64~75) 입력한다.
+    post = models.ForeignKey(Post, on_delete=models.CASCADE) #482. 어떤 포스트에 대한 댓글인가에 관한 내용(모델이름:Post, on_delete=models.CASCADE: 글이 지워지면 아래 댓글도 다 지워지는 설정)
+    author = models.ForeignKey(User, on_delete=models.CASCADE) #483. 작성자가 누구인지 (다대일 매칭), 마찬가지로 글이 삭제되면 댓글 작성자도 삭제되도록
+    content = models.TextField() #484. 댓글을 달면 content라는 내용으로 담긴다. 위(Post)에는 마크다운을 썼지만 여기선 텍스트필드를 사용했다. 왜냐면 마크다운 허용하면 이것저것 화려하게 다 꾸미기 때문이다.
+    created_at = models.DateTimeField(auto_now_add=True) #485. 작성일 (41~42의 내용 복사해 붙여서 이와같이 변경)
+    updated_at = models.DateTimeField(auto_now=True) #486. 수정일, 즉 5개의 필드가 있는 모델이 만들어짐
+
+    def __str__(self): #487. admin에서 어떻게 보이게 할 것인가에 대한 함수
+        return f'{self.author}::{self.content}' #488. 작성자가 누구고 내용이 무엇인지 보여준다. 이제 makemigrations 이후 migrater를 한다. 이제 admin.py의 2째줄로 간다.
+
+    def get_absolute_url(self): #497. 포스트로 이동해와서 self.pk에 따른 곳으로 이동한다. 이 내용은 post_detail.html의 95번째 줄의 내용을 보고 움직인다.
+        return f'{self.post.get_absolute_url()}#comment-{self.pk}'
