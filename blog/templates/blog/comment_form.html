@@ -1,0 +1,13 @@
+{% extends 'blog/base_full_width.html' %} <!-- 553. post_update_form.html의 내용(1~21)을 복사해서 붙여놓고 이와같이 변경한다. -->
+{% load crispy_forms_tags %}
+{% block head_title %}Edit Comment - Blog{% endblock %} <!-- 554. 타이틀 이름을 이와같이 변경한다. -->
+
+{% block main_area %}
+<h1>Edit Comment</h1>
+<hr/>
+<form method="post" id="comment-form">{% csrf_token %} <!-- 555. 테스트에서 id를 comment-form으로 지정을 했기때문에 이를 가져오기 위해서 이렇게 지정했다. 그리고 csrf를 반드시 적용시킨다. -->
+    {{ form | crispy }}
+    <br/>
+    <button type="submit" class="btn btn-primary float-right">Submit</button> <!-- 556. 버튼을 추가한다. 이제 post_detail.html의 111줄로 이동한다. -->
+</form>
+{% endblock %}

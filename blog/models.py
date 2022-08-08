@@ -3,6 +3,7 @@ from django.contrib.auth.models import User #181. User의 사용을 위해 임�
 import os #95. 파일 이름을 가져오기 위해 import os 패키지를 입력한다.
 from markdownx.utils import markdown #459.
 from markdownx.models import MarkdownxField #457.
+from datetime import timedelta #557.
 
 
 class Category(models.Model): #194. 카테고리 항목에 대한 설정
@@ -73,3 +74,6 @@ class Comment(models.Model): #481. 댓글에 관한 내용을 아래와 같이(6
 
     def get_absolute_url(self): #497. 포스트로 이동해와서 self.pk에 따른 곳으로 이동한다. 이 내용은 post_detail.html의 95번째 줄의 내용을 보고 움직인다. 이제 tests.py의
         return f'{self.post.get_absolute_url()}#comment-{self.pk}'
+
+    def is_updated(self): #557. post_detail에서 지정한 is_updated의 함수를 지정하고 timedelta를 6째줄에 임포트한다.
+        return self.updated_at - self.created_at > timedelta(seconds=1) #558. 업데이트시간 - 최초작성시간이 1초보다 크다 라는 뜻

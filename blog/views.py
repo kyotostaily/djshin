@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404 #518. get_objec
 from django.utils.text import slugify #421. slugify임포트
 from django.views.generic import ListView, DetailView, CreateView, UpdateView #335. CreateView를 임포트한다. 385.UpdateView임포트
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin #373., UserPassesTestMixin임포트
-from .models import Post, Category, Tag #265. Category를 임포트 시킨다. 325.Tag임포트.
+from .models import Post, Category, Tag, Comment #548. Comment임포트 .models의 .은 현재 폴더를 의미한다.
 from .forms import CommentForm #515. CommentForm임포트
 
 #39. ListView를 확장해서 model을 어떤 모델을 쓸것인지 정의하고(model = Post), ordering을 바꿔주면 된다. 그리고 파일명도 post_list.html로 바꿔준다.
@@ -149,6 +149,16 @@ def new_comment(request, pk): #517. new_comment에 대한 함수를 입력한다
                 comment.author = request.user
                 comment.save() #522. 위의 내용이 다 차면 저장한다.
                 return redirect(comment.get_absolute_url()) #523. 저장했으니 그 위치가 뜬다.
-        return redirect(post.get_absolute_url()) #524. POST가 아니거나 폼이 아닌경우에는 redirect
+        return redirect(post.get_absolute_url()) #524. POST가 아니거나 폼이 아닌경우에는 redirect. 이제 tests.py의 233줄로 이동한다.
     else:
         raise PermissionError
+
+class CommentUpdate(LoginRequiredMixin, UpdateView): #548. CommentUpdate에 대한 내용을 이(156~164)와같이 입력한다. 로긴한 사람만 쓰도록 LoginRequiredMixin을 사용했고 UpdateView를 상속받아 사용했다.
+    model = Comment #548. 6째 줄에 임포트한다.
+    form_class = CommentForm #549. from_class는 froms.py의 CommentForm을 가져와서 사용한다.
+
+    def dispatch(self, request, *args, **kwargs): #550. CommentUpdate를 원본으로 삼고있는것이 69줄의 dispatch이고, dispatch는 get방식인지 post방식인지 알아차리는 동시에, 이사람이 로그인 했는지, 작성자인지 확인해서 이 둘이 맞는경우에만 UpdateView에서 제공하는 dispatch기능을 활용하게 했고, 이에 맞지 않으면 PermissionDenied를 사용한다.
+        if request.user.is_authenticated and request.user == self.get_object().author: #552. urls.py에서 물고 들어오는 pk를 이곳의 get_object()에서 어떤 comment를 갖고올것인지 다룬다. 이제 templates/blog/comment_form.html을 만들고 이동한다.
+            return super(CommentUpdate, self).dispatch(request, *args, **kwargs) #551. 69~73의 내용을 복사해서 붙여넣으면서 CommentUpdate로 수정한다.
+        else:
+            raise PermissionDenied

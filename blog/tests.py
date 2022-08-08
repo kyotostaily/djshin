@@ -1,3 +1,4 @@
+from time import sleep
 from django.test import TestCase, Client #118. Client입력
 from django.contrib.auth.models import User #185. models.py에 가서 User의 사용을 위해 복사해서 붙여넣는다.
 from bs4 import BeautifulSoup #119.
@@ -229,6 +230,57 @@ class TestView(TestCase): #113. 이런식으로 TestCase를 확장시켜준다.
         new_comment_div = comment_area.find('div', id=f'comment-{new_comment.pk}') #510. post_detail.html에 이 내용이 있는지 확인
         self.assertIn('obama', new_comment_div.text) #511. 작성자 이름이 있는지 확인
         self.assertIn('오바마의 댓글입니다', new_comment_div.text) #512. 작성한 내용이 있는지 확인. 이제 blog/forms.py를 만들고 이동한다.
+
+    def test_comment_update(self): #525. 댓글을 수정하는 상황을 테스트하기 위한 함수를 아래와같이 만든다.
+        comment_by_trump = Comment.objects.create( #526. 다른이가 작성한 댓글이 있어야하므로 comment_by_trump를 새로 만든다.
+            post=self.post_001,
+            author=self.user_trump,
+            content='트럼프의 댓글입니다.'
+        )
+        response = self.client.get(self.post_001.get_absolute_url()) #527. 로긴하지 않은 상태에서 댓글이 2개 있는 self.post001 페이지를 연다.
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        comment_area = soup.find('div', id='comment-area') #528. 댓글 영역에 edit 버튼이 둘다 보이지 않아야 하므로, 수정 버튼의 id는 comment-해당숫자, comment의 pk-update-btn으로 만든다.(244~245)
+        self.assertFalse(comment_area.find('a', id='comment-1-update-btn'))
+        self.assertFalse(comment_area.find('a', id='comment-2-update-btn'))
+
+        # obama로 로그인 한 상태
+        self.client.login(username='obama', password='somepassword') #529. obama로 로긴한 상태에서 다시 테스트 하기위해 준비한다.
+        response = self.client.get(self.post_001.get_absolute_url()) #530. (239~243)의 내용을 복사해서 이와같이 붙여넣는다.
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        comment_area = soup.find('div', id='comment-area')
+        self.assertTrue(comment_area.find('a', id='comment-1-update-btn'))
+        self.assertFalse(comment_area.find('a', id='comment-2-update-btn'))
+
+        comment_001_update_btn = comment_area.find('a', id='comment-1-update-btn') #531. comment_area에서 a태그를 찾는데 id가 comment-1-update-btn라는 걸 찾아와서 comment_001_update_btn으로 부르겠다는 뜻. 1이라는 숫자가 pk(프라이머리 키)로써, 계속 바뀌게 한다.
+        self.assertIn('edit', comment_001_update_btn.text) #532. 여기에 edit가 comment_001_update_btn(버튼).text에 있어야 한다는 뜻이고,
+        self.assertEqual(comment_001_update_btn.attrs['href'], '/blog/update_comment/1/') #533. comment_001_update_btn(버튼)에 href로 되있는 경로가 원하고 있는 /blog/update_comment/1/과 연결되어 있는지 확인한다는 뜻이다. 이제post_detail.html의 103째 줄로 이동한다.
+
+        response = self.client.get('/blog/update_comment/1/') #536. 이 경로로 가도록 요청하여 간다.
+        self.assertEqual(response.status_code, 200) #537. 잘 되는지 확인하고
+        soup = BeautifulSoup(response.content, 'html.parser') #538. 다루기 쉽게 html.parser로 열어준다.
+
+        self.assertEqual('Edit Comment - Blog', soup.title.text) #539. soup.title.text에 Edit Comment - Blog이 있으면 좋겠다.
+        update_comment_form = soup.find('form', id='comment-form') #540. form인데 id가 comment-form이라는 뜻이다.
+        content_textarea = update_comment_form.find('textarea', id='id_content') #541. update_comment_form안에 textarea라는 html태그가 있고, id는 id_content라는 뜻이다. 여기서의 content는 models.py의 67줄의content = models.TextField()를 의미한다. id_는 장고에서 form을 다룰때 항상 이런식으로 만들어주는 것이다.
+        self.assertIn(self.comment_001.content, content_textarea.text) #542. 이 안에 원래의 댓글 즉,(obama)의 댓글이 content_textarea에 있기를 바라는 것이다. (테스트상 이 댓글이 없으면 수정이 안되기 때문에)
+        sleep(2) #542. 나중에 실행에 1초이상 차이나야 하는 것을 고려해 sleep을 2초를 쉬는시간을 지정하고 1째줄에 임포트한다.
+        response = self.client.post( #543. 이런경우는 post를 이용한다. 경로 지정'/blog/update_comment/1/'후 'content': '오바마의 댓글을 수정합니다.'입력 후, follow= True를 입력해서 post로 db에서 작업한것을, 결과인 페이지로 redirect 함으로써, 테스트 코드에서 이전에 정해놓은 것들에 잘 따라가게 한다.
+            '/blog/update_comment/1/',
+            {
+                'content': '오바마의 댓글을 수정합니다.'
+            },
+            follow=True
+        )
+
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        comment_001_div = soup.find('div', id='comment-1') #544. comment-1에 대한 내용이 수정이 되었다면, comment_001_div에 잘 있어야 한다.
+        self.assertIn('오바마의 댓글을 수정합니다.', comment_001_div.text) #545. 이렇게 수정한 내용이 안에 있어야 한다는 뜻.
+        self.assertIn('Updated: ', comment_001_div.text) #546. 업데이트가 언제 되었다고 나오게 한다. 이제 blog/urls.py의 5째줄로 이동한다.
 
     def test_category_page(self): #278. category_page의 테스트코드를 작성한다.
         response = self.client.get(self.category_programming.get_absolute_url()) #279 해당하는 카테고리에 absolute_url을 통해서 가도록 만든다.

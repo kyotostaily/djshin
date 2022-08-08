@@ -1,7 +1,7 @@
 {% extends 'blog/base.html' %} <!-- 157. post_list.html의 1~3열의 것을 복사해서 붙이고 맨 아래에 endblock을 한다. -->
 {% load crispy_forms_tags %} <!-- 502. 87줄의 내용을 사용하기 위해 이와같이 입력한다. crispy_forms는 예뻐진 창을 볼수 있게한다. 다시 tests.py의 200번째 줄로 간다.-->
 {% block head_title %}
-    {{ post.title }} | Blog
+{{ post.title }} | Blog
 {% endblock %}
 
 {% block main_area %}
@@ -99,9 +99,18 @@
     <!-- Single Comment --> <!-- 496. 기존 내용(92~113)을 삭제하고 이와 같이(92~99, 101~103, 105~106) 입력하고 그 사이의 내용은 삭제한다. 다 바꿨으면 models.py의 74번째 줄로 이동한다.-->
     <div class="media mb-4" id="comment-{{ comment.pk }}">
         <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
-        <div class="media-body"> <!--497. text-muted:색이 조금 죽어서 나온다. linebreaks: 줄바꿈이 가능하게 한다. -->
+        <div class="media-body"> <!--534. 아래(103~108)와 같이 입력한다. 로긴했고, 작성자일 경우에 edit버튼이 보이게 if문을 쓴다.-->
+            {% if user.is_authenticated and comment.author == user %}
+            <a class="btn btn-sm btn-info float-right"
+               role="button"
+               id="comment-{{ comment.pk }}-update-btn"
+               href="/blog/update_comment/{{ comment.pk }}/">edit</a> <!-- 535. 댓글을 쓸 때 마다 pk(댓글의 고유번호생성)에 번호가 생성된다. 부트스트랩의 버튼 디자인을 가져와서 활용한다. float-right:오른쪽으로 간다. 이제 tests.py의 261줄로 이동한다. -->
+            {% endif %}
             <h5 class="mt-0">{{ comment.author.username }} &nbsp;&nbsp; <small class="text-muted">{{ comment.created_at }}</small></h5>
             {{ comment.content | linebreaks }}
+            {% if comment.is_updated %}
+                <p class="text-muted float-right">Updated: {{ comment.updated_at }}</p> <!-- 557. 111~113과 같은 if문의 내용을 추가함으로 Update된 것에 대한 사항을 이와같이 추가한다. 이제 models.py의 78줄로 이동하여 is_updated의 함수를 지정한다. -->
+            {% endif %}
         </div>
     </div>
     {% endfor %}
