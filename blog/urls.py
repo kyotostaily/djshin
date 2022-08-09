@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    path('delete_comment/<int:pk>/', views.delete_comment), #577. views.py의 delete_comment에 대한 경로를 지정한다. 이제 views.py의 167째줄로 이동한다.
     path('update_comment/<int:pk>/', views.CommentUpdate.as_view()), #547. views.py의 CommentUpdate에 대한 경로를 지정한다. 이제 views.py의 156째줄로 이동한다.
     path('update_post/<int:pk>/', views.PostUpdate.as_view()), #384. tests.py의 239줄에 대한 경로를 지정한다. 그리고 views.py의 45째 줄로 이동한다.
     path('create_post/', views.PostCreate.as_view()), #334. PostCreate에 대한 경로를 지정하고 views.py의 28째 줄로 이동한다.

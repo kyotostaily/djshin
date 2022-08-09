@@ -101,10 +101,44 @@
         <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
         <div class="media-body"> <!--534. 아래(103~108)와 같이 입력한다. 로긴했고, 작성자일 경우에 edit버튼이 보이게 if문을 쓴다.-->
             {% if user.is_authenticated and comment.author == user %}
-            <a class="btn btn-sm btn-info float-right"
-               role="button"
-               id="comment-{{ comment.pk }}-update-btn"
-               href="/blog/update_comment/{{ comment.pk }}/">edit</a> <!-- 535. 댓글을 쓸 때 마다 pk(댓글의 고유번호생성)에 번호가 생성된다. 부트스트랩의 버튼 디자인을 가져와서 활용한다. float-right:오른쪽으로 간다. 이제 tests.py의 261줄로 이동한다. -->
+            <div class="float-right"> <!-- 571.이전의 if문 안의 내용(104~107)의 내용을 지우고 현재(104~141)와같이 입력한다. edit과 delte버튼이 나란히 있게 하기위해 float-right로 입력한다. -->
+                <a class="btn btn-sm btn-info"
+                   role="button"
+                   id="comment-{{ comment.pk }}-update-btn"
+                   href="/blog/update_comment/{{ comment.pk }}/">edit</a> <!-- 572. edit버튼에 대한 편집 -->
+                <a class="btn btn-sm btn-danger"
+                   role="button"
+                   id="comment-{{ comment.pk }}-delete-btn"
+                   data-toggle="modal"
+                   data-target="#deleteCommentModal-{{ comment.pk }}"
+                   href="#">delete</a> <!-- 573. delete버튼에 대한 편집(이 버튼이 제대로 작동하기 위해 data-target에 정의한 값과 똑간은 id를 가진 div가 존재해야 한다. -->
+            </div>
+
+            <!-- Modal {{ comment.pk }} --> <!-- 574. navbar.html에서 43~69의 내용을 복사해서 이곳에 붙이고 아래와같이 변경한다. -->
+            <div class="modal fade" id="deleteCommentModal-{{ comment.pk }}" tabindex="-1" aria-labelledby="deleteCommentModal-{{ comment.pk }}-ModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteCommentModalLabel-{{ comment.pk }}">Are You Sure?</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body"> <!-- 575. 어떤 댓글을 삭제하는지 알수 있도록 댓글 내용을 보여주고, 이 댓글이 삭제될 예정이라고 표시하기 위해 del태그로 감싸 취소선이 나타나도록 한다. -->
+                            <del>{{ comment | linebreaks }}</del>
+                        </div>
+                        <div class="modal-footer"> <!-- 576. (130~136)에는 버튼이 2개 존재하는데 하나는 Close, 하나는 Delete인데 Delete 버튼을 누르면 방문자가 의사를 확실히 밝힌것이므로 댓글을 삭제하는 경로로 이동한다. 이제 blog/urls.py의 5째줄로 이동한다.  -->
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <a role="button"
+                               type="button"
+                               class="btn btn-danger"
+                               href="/blog/delete_comment/{{ comment.pk }}/">
+                                Delete
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
             {% endif %}
             <h5 class="mt-0">{{ comment.author.username }} &nbsp;&nbsp; <small class="text-muted">{{ comment.created_at }}</small></h5>
             {{ comment.content | linebreaks }}

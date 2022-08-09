@@ -76,4 +76,4 @@ class Comment(models.Model): #481. 댓글에 관한 내용을 아래와 같이(6
         return f'{self.post.get_absolute_url()}#comment-{self.pk}'
 
     def is_updated(self): #557. post_detail에서 지정한 is_updated의 함수를 지정하고 timedelta를 6째줄에 임포트한다.
-        return self.updated_at - self.created_at > timedelta(seconds=1) #558. 업데이트시간 - 최초작성시간이 1초보다 크다 라는 뜻
+        return self.updated_at - self.created_at > timedelta(seconds=1) #558. 업데이트시간 - 최초작성시간이 1초보다 크다 라는 뜻, 이제 tests.py의 285줄로 이동한다.

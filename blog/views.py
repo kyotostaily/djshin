@@ -162,3 +162,14 @@ class CommentUpdate(LoginRequiredMixin, UpdateView): #548. CommentUpdate에 대�
             return super(CommentUpdate, self).dispatch(request, *args, **kwargs) #551. 69~73의 내용을 복사해서 붙여넣으면서 CommentUpdate로 수정한다.
         else:
             raise PermissionDenied
+
+
+def delete_comment(request, pk): #578. urls.py와 연결된 delete_comment의 함수(167~175)를 아래와 같이 작성한다.
+    comment = get_object_or_404(Comment, pk=pk) #579. get_object_or_404함수를 이용해 delete_comment() 함수에서 인자로 받은 pk값과 같은 pk값을 가진 댓글을 쿼리셋으로 받아 comment변수에 저장한다. 만약 인자로 받아온 pk에 해당하는 댓글이 존재하지 않으면 404오류가 발생한다.
+    post = comment.post #580. 해당하는 댓글을 받아왔다면 그 댓글이 달린 포스트를 post변수에 저장한다. 왜냐하면 댓글이 삭제된 이후, 그 댓글이 달려있던 포스트 상세 페이지로 redirect해야하기 때문이다.
+
+    if request.user.is_authenticated and request.user == comment.author: #581. 로그인한 사용자인지, 그리고 이글의 작성자인지 확인한다.
+        comment.delete()
+        return redirect(post.get_absolute_url()) #582. 처리후 포스트 상세 페이지로 redirect한다.
+    else:
+        raise PermissionDenied #583. 권한없이 접근하면 이 오류를 발생시킨다. 

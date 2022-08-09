@@ -282,6 +282,58 @@ class TestView(TestCase): #113. 이런식으로 TestCase를 확장시켜준다.
         self.assertIn('오바마의 댓글을 수정합니다.', comment_001_div.text) #545. 이렇게 수정한 내용이 안에 있어야 한다는 뜻.
         self.assertIn('Updated: ', comment_001_div.text) #546. 업데이트가 언제 되었다고 나오게 한다. 이제 blog/urls.py의 5째줄로 이동한다.
 
+    def test_comment_delete(self): #559. 댓글을 지우는 것에 대한 테스트 내용을 이와같이 작성한다.(285~335)
+        comment_by_trump = Comment.objects.create( #560. setUp() 함수에서 self.post_001에 obama의 댓글이 있으니 이것과 합해 총 2개이다.
+            post=self.post_001,
+            author=self.user_trump,
+            content='트럼프의 댓글입니다'
+        )
+        self.assertEqual(Comment.objects.count(), 2) #561. 테스트상 댓글의 수는 2개이어야한다.
+        self.assertEqual(self.post_001.comment_set.count(), 2)
+
+        #562. 로그인 하지 않은 상태
+        response = self.client.get(self.post_001.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        comment_area = soup.find('div', id='comment-area')
+        self.assertFalse(comment_area.find('a', id='comment-1-delete-btn')) #563. 로그인이 안된상태에서는 delete버튼이 보이면 안되므로 assertFalse가 온다. comment-1, 2(pk)는 모두 여기선 false 상태이다.
+        self.assertFalse(comment_area.find('a', id='comment-2-delete-btn'))
+
+        # trump로 로그인 한 상태
+        self.client.login(username='trump', password='somepassword')
+        response = self.client.get(self.post_001.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        comment_area = soup.find('div', id='comment-area')
+        self.assertFalse(comment_area.find('a', id='comment-1-delete-btn')) #564. obama의 댓글의 번호가 1번이다. 여기선 trump가 로그인 했으므로 여기선 delete버튼이 보이면 안되므로 assertFalse이다.
+        self.assertTrue(comment_area.find('a', id='comment-2-delete-btn')) #565. obama다음으로 trump가 댓글을 달았으므로 2번이다. trump가 로그인 했으므로 assertTrue이다. 이 버튼(btn)은 바로 지우는 버튼이 아니라 정말 지울건지 재차 물어보는 모달을 나타내기 위한 버튼이다.
+
+        comment_002_delete_modal_btn = comment_area.find('a', id='comment-2-delete-btn') #566. trump가 작성한 댓글의 delete를 위한 버튼이며, #deleteCommentModal-2와 연결되어 있다.
+        self.assertIn('delete', comment_002_delete_modal_btn.text)
+        self.assertEqual(
+            comment_002_delete_modal_btn.attrs['data-target'],
+            '#deleteCommentModal-2'
+        )
+
+        delete_comment_modal_002 = soup.find('div', id='deleteCommentModal-2') #567.삭제할지 물어보는 Modal에는 Are you sure? 라는 문구와 함께, delete버튼이 있어야 하며
+        self.assertIn('Are You Sure?', delete_comment_modal_002.text)
+        really_delete_btn_002 = delete_comment_modal_002.find('a')
+        self.assertIn('Delete', really_delete_btn_002.text)
+        self.assertEqual(really_delete_btn_002.attrs['href'], '/blog/delete_comment/2/') #568. 이 버튼의 링크는 delete_comment/삭제할 pk번호로 되어 있다.
+
+        response = self.client.get('/blog/delete_comment/2/', follow=True) #569. delete버튼을 누그면 댓글이 지워지고 self.post_001의 페이지로 redirect 된다.
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        self.assertIn(self.post_001.title, soup.title.text)
+        comment_area = soup.find('div', id='comment-area')
+        self.assertNotIn('트럼프의 댓글입니다', comment_area.text)
+
+        self.assertEqual(Comment.objects.count(), 1) #570. 댓글의 수는 trump의 댓글이 지워졌으므로 다시 1개가 된다.
+        self.assertEqual(self.post_001.comment_set.count(), 1) #570. 이제 post_detail.html로 이동한다.
+
     def test_category_page(self): #278. category_page의 테스트코드를 작성한다.
         response = self.client.get(self.category_programming.get_absolute_url()) #279 해당하는 카테고리에 absolute_url을 통해서 가도록 만든다.
         self.assertEqual(response.status_code, 200) #280. 잘나오는지 200인지 확인하고,
