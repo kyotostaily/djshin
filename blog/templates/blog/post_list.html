@@ -61,14 +61,28 @@
 <h1>아직 게시물이 없습니다</h1> <!-- 128 -->
 {% endif %} <!-- 128 -->
 
-<!-- Pagination -->
-<ul class="pagination justify-content-center mb-4">
-    <li class="page-item">
-        <a class="page-link" href="#">&larr; Older</a>
-    </li>
-    <li class="page-item disabled">
-        <a class="page-link" href="#">Newer &rarr;</a>
-    </li>
-</ul> <!-- 152. 이 아래의 내용들을 전부 지우고 ctr + alt + i 로 열을 맞춘다. -->
+{% if is_paginated %}
+        <!-- Pagination --> <!-- 585.if문과 endif로 감싼 이후(감싼 이유는 포스트 개수가 5개 이하여서 pagination을 할 필요가 없을때는 이 부분이 화면에 나타나지 않게 하기 위함이다.), 그 안에 pagination에 대한 내용을 이(65~86)와 같이 입력한다. -->
+        <ul class="pagination justify-content-center mb-4">
+            {% if page_obj.has_next %} <!-- 586. (Older버튼 부분)다음 페이지가 있는지 알아내서 버튼을 비활성화 상태로 할지 여부를 결정하기 위해 사용한다. -->
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">&larr; Older</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled"> <!-- 586. 비활성화 상태를 해야할때 -->
+                <a class="page-link" href="#">&larr; Older</a>
+            </li>
+            {% endif %}
 
+            {% if page_obj.has_previous %} <!-- 587. (Newer버튼 부분)다음 페이지가 있는지 알아내서 버튼을 비활성화 상태로 할지 여부를 결정하기 위해 사용한다. -->
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Newer &rarr;</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled"> <!-- 587. 비활성화 상태를 해야할때 -->
+                <a class="page-link" href="#">Newer &rarr;</a>
+            </li>
+            {% endif %}
+        </ul>
+    {% endif %}
 {% endblock %} <!-- 155. 위에 block으로 감쌌으므로 마지막에 endblock을 입력하고 156. post_detail.html로 이동해서 1~59, 101~마지막까지 삭제하고 ctr + alt + i로 정리한다. -->

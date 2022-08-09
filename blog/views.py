@@ -10,7 +10,7 @@ from .forms import CommentForm #515. CommentForm임포트
 class PostList(ListView): #38. 리스트를 보여주고 싶으면 이렇게 모델명만 적어주면 된다.
     model = Post #33. 여기까지 입력 후 blog/urls.py로 이동한다.
     ordering = '-pk' #37. 파일 이름을 post_list.html로 바꾸고 ordering을 지정해서 최신순으로 해 준다.
-    # 35. 이 클래스에서 리스트 뷰로 넘길 때는 항상 모델명_리스트의 형태로 넘기게 되어있다. ex) template_name = 'blog/post_list.html' index.html로 이동한다.
+    paginate_by = 5 #584. pagination을 위해 이와같이 입력하면 한 페이지에 5개의 포스트만 보여준다. 이제 post_list.html의 64째줄로 이동한다.
 
     def get_context_data(self, **kwargs): #263. 이렇게 하면 위의 ListView가 제공하는 것은 그대로 다 쓰면서 다른 내용을 추가할 수 있다.
         context = super(PostList, self).get_context_data() #263.
@@ -172,4 +172,4 @@ def delete_comment(request, pk): #578. urls.py와 연결된 delete_comment의 �
         comment.delete()
         return redirect(post.get_absolute_url()) #582. 처리후 포스트 상세 페이지로 redirect한다.
     else:
-        raise PermissionDenied #583. 권한없이 접근하면 이 오류를 발생시킨다. 
+        raise PermissionDenied #583. 권한없이 접근하면 이 오류를 발생시킨다. 이제 13째 줄로 이동한다.
