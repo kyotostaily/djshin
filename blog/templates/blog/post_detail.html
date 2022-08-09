@@ -98,7 +98,7 @@
     {% for comment in post.comment_set.iterator %}
     <!-- Single Comment --> <!-- 496. 기존 내용(92~113)을 삭제하고 이와 같이(92~99, 101~103, 105~106) 입력하고 그 사이의 내용은 삭제한다. 다 바꿨으면 models.py의 74번째 줄로 이동한다.-->
     <div class="media mb-4" id="comment-{{ comment.pk }}">
-        <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+        <img class="d-flex mr-3 rounded-circle" src="{{ comment.get_avatar_url }}" alt="{{ comment.author }}" width="60px"> <!-- 612. 아바타가 출력되게 하기 위하여 Comment모델에서 새로만든 get_avatar_url() 함수를 이용해서 아바타의 이미지를 받아오기 위해 이와같이 입력한다. 그리고 그림의 크기도 60px정도로 고정해준다. 이제 navbar.html의 27째줄로 이동한다. -->
         <div class="media-body"> <!--534. 아래(103~108)와 같이 입력한다. 로긴했고, 작성자일 경우에 edit버튼이 보이게 if문을 쓴다.-->
             {% if user.is_authenticated and comment.author == user %}
             <div class="float-right"> <!-- 571.이전의 if문 안의 내용(104~107)의 내용을 지우고 현재(104~141)와같이 입력한다. edit과 delte버튼이 나란히 있게 하기위해 float-right로 입력한다. -->

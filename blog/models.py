@@ -77,3 +77,9 @@ class Comment(models.Model): #481. 댓글에 관한 내용을 아래와 같이(6
 
     def is_updated(self): #557. post_detail에서 지정한 is_updated의 함수를 지정하고 timedelta를 6째줄에 임포트한다.
         return self.updated_at - self.created_at > timedelta(seconds=1) #558. 업데이트시간 - 최초작성시간이 1초보다 크다 라는 뜻, 이제 tests.py의 285줄로 이동한다.
+
+    def get_avatar_url(self): #608. 구글로 로그인 한 사람들의 아바타가 나올수 있도록 이와같이(81~85) 함수를 입력한다.
+        if self.author.socialaccount_set.exists(): #609. django-allauth를 이용해 소셜 로그인을 할 경우
+            return self.author.socialaccount_set.first().get_avatar_url() #610. 그 로그인 계정의 아바타 URL을 가져온다.
+        else:
+            return f'https://doitdjango.com/avatar/id/1164/79445086251f6541/svg/{self.author.email}' #611. doitdjango.com으로 가서 Avatar메뉴에서 google로 접속한 후 create a project -> 자신의 도메인 입력 -> id/부여받은 id/부여받은key/svg/에 따라 이곳에 이와같이 입력한다. 이제 post_detail.html의 101째 줄로 간다.
