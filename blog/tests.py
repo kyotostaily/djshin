@@ -455,3 +455,22 @@ class TestView(TestCase): #113. 이런식으로 TestCase를 확장시켜준다.
         self.assertIn('한글 태그', main_area.text) #429.
         self.assertIn('some tag', main_area.text) #429.
         self.assertNotIn('python', main_area.text) #430. 태그가 수정된 상태에서는 없어야 하니 assertNotIn. 이제 post_update_form.html의 14째줄로 이동한다.
+
+    def test_search(self): #592. 검색기능의 구현을 위한 테스트코드에 대한 함수(459~476)를 이와같이 입력한다.
+        post_about_python = Post.objects.create( #593. setUp함수에 만들어놓은 블로그 포스트 3개중 '파이썬'이 들어가 있는 포스트가 없으므로 포스트를 하나 만들어 post_about_python에 저장한다.
+            title='파이썬에 대한 포스트입니다.',
+            content='Hello World, We are the world',
+            author=self.user_trump
+        )
+
+        response = self.client.get('/blog/search/파이썬/') #594. 파이썬 이라는 검색어를 서버에 전달하는 URL은 /blog/search/파이썬/ 과 같이 설정한다. 왜냐하면 파이썬 이라는 단어를 검색하는 경우로 가정하고 있기 때문이다.
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        main_area = soup.find('div', id='main-area')
+
+        self.assertIn('Search: 파이썬 (2)', main_area.text) #595. 이때, main_area에 Search: 파이썬 (2) 이 포함되어 있어야 하는데 (2)는 검색결과에 해당하는 포스트가 총 2개 (파이썬, 파이썬 공부라는 태그)라는 의미이다.
+        self.assertNotIn(self.post_001.title, main_area.text)
+        self.assertNotIn(self.post_002.title, main_area.text)
+        self.assertIn(self.post_003.title, main_area.text) #596. 003번 post의 태그에는 파이썬 공부라는 내용이 있으므로 assertIn이 되어야 한다.
+        self.assertIn(post_about_python.title, main_area.text) #597. 460줄에서 임으로만든 포스트 에서 파이썬이라는 단어가 들어가 있으므로 assertIn이 되어야 한다. 이제 /blog/search/파이썬/ 으로 검색했을때 PostSearch 클래스에서 처리될수 있도록 blog/urls.py의 5째줄로 이동한다.

@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    path('search/<str:q>/', views.PostSearch.as_view()), #598. views.py의 PostSearch에 대한 경로를 지정한다. 이제 views.py의 178째줄로 이동한다. (<str:q>는 검색어에 해당하는 값을 문자열(str)로 받고, 이 값을 q라고 부르겠다는 의미이다.)
     path('delete_comment/<int:pk>/', views.delete_comment), #577. views.py의 delete_comment에 대한 경로를 지정한다. 이제 views.py의 167째줄로 이동한다.
     path('update_comment/<int:pk>/', views.CommentUpdate.as_view()), #547. views.py의 CommentUpdate에 대한 경로를 지정한다. 이제 views.py의 156째줄로 이동한다.
     path('update_post/<int:pk>/', views.PostUpdate.as_view()), #384. tests.py의 239줄에 대한 경로를 지정한다. 그리고 views.py의 45째 줄로 이동한다.

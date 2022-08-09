@@ -8,6 +8,7 @@
     {% endif %}
     <h1> <!-- 295. 아래 23째 줄의 내용(카테고리 뱃지: float-right를 없애면 왼쪽으로 붙는다.)을 복사하여 아래처럼 붙이고 변경한 후 if와 endif문으로 감싸준다. 이제 base.html의 42번째 줄로 이동한다. -->
         Blog
+        {% if search_info %}<small class="text-muted">{{ search_info }}</small>{% endif %} <!-- 607. PostSearch는 PostList를 상속받아 만든 클래스이고, template_name을 따로 설정하지 않았으므로 post_list.html을 템플릿으로 사용한다. 이와같이 search_info가 값으로 넘어올때 사용할 수 있도록 if문을 입력한다. -->
         {% if category %}
             <span class="badge badge-secondary">{{ category }}</span>
         {% endif %}
@@ -79,7 +80,7 @@
                 <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Newer &rarr;</a>
             </li>
             {% else %}
-            <li class="page-item disabled"> <!-- 587. 비활성화 상태를 해야할때 -->
+            <li class="page-item disabled"> <!-- 587. 비활성화 상태를 해야할때 이제 base.html의 27줄로 이동한다.-->
                 <a class="page-link" href="#">Newer &rarr;</a>
             </li>
             {% endif %}

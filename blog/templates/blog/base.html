@@ -22,9 +22,9 @@
                 <h5 class="card-header">Search</h5>
                 <div class="card-body">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for...">
+                        <input type="text" class="form-control" placeholder="Search for..." id="search-input"> <!-- 589. input요소 안에 있는 값을 가져와서 검색하기 위해 id="search-input"라고 id를 부여한다.-->
                         <span class="input-group-append">
-                            <button class="btn btn-secondary" type="button">Go!</button>
+                            <button class="btn btn-secondary" type="button" onclick="searchPost();">Go!</button> <!-- 588. Go버튼 클릭시 자바스크립트로 만든 searchPost()함수를 실행한다는 뜻, 이제 62줄로 이동한다. -->
                             </span>
                     </div>
                 </div>
@@ -57,6 +57,25 @@
     </div>
 
 </div>
+<!-- 590.(62~71) id가 search-input인 요소의 값을 63번째의 문장으로 가져오라는 의미이고, trim()은 앞뒤 공백을 제거하라는 의미이다. 이 값을 지역변수인 searchValue에 담고, 그 길이가 1보다 큰 경우에 한해서 검색이 가능하게 설정함, 조건이 만족할경우, location.href에 지정한 URL로 이동한다. 아닐경우 else의 경고문이 뜬다.  -->
+<!-- 591.(73~78)현재 페이지에서 id가 search-input인 요소를 찾아서 여기에 키보드가 눌렸다가 올라올 때를 의미하는 keyup이벤트 리스너를 추가한다. 그러면 Enter를 눌렀다 올라올때도, searchPost()함수가 실행된다. 이제 tests.py의 459줄로 이동한다. -->
+<script>
+    function searchPost(){
+        let searchValue = document.getElementById('search-input').value.trim();
+        if (searchValue.length > 1){
+            location.href="/blog/search/"+ searchValue + "/";
+        }
+        else{
+            alert('검색어(' + searchValue + ')가 너무 짧습니다.');
+        }
+    };
+
+    document.getElementById('search-input').addEventListener('keyup', function(event){
+        if(event.key == 'Enter'){
+            searchPost();
+        }
+    })
+</script>
 
 {% include 'blog/footer.html' %} <!-- 180. footer.html의 내용을 사용하기 위해 이와같이 입력한다. 이제 models.py로 이동한다.-->
 <!-- 179. footer의 내용은 footer.html로 옮겨갔다.(모듈화작업) -->

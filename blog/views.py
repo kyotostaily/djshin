@@ -1,4 +1,5 @@
 from django.core.exceptions import PermissionDenied #390.PermissionDenied를 임포트 한다.
+from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404 #518. get_object_or_404임포트
 from django.utils.text import slugify #421. slugify임포트
 from django.views.generic import ListView, DetailView, CreateView, UpdateView #335. CreateView를 임포트한다. 385.UpdateView임포트
@@ -173,3 +174,21 @@ def delete_comment(request, pk): #578. urls.py와 연결된 delete_comment의 �
         return redirect(post.get_absolute_url()) #582. 처리후 포스트 상세 페이지로 redirect한다.
     else:
         raise PermissionDenied #583. 권한없이 접근하면 이 오류를 발생시킨다. 이제 13째 줄로 이동한다.
+
+
+class PostSearch(PostList): #599. PostSearch에 대한 함수(178~193)를 이와같이 작성한다.
+    paginate_by = None #600. PostList에서 저장했던 pagination_by = 5를 검색된 결과를 한 페이지에 다 보여주기 위해 여기서는 None으로 다시 설정한다.
+
+    def get_queryset(self): #601. PostList는 ListView를 상속받아 만들었고 ListView는 기본적으로 get_queryset()메서드를 제공하는데 이것은 model로 지정된 요소 전체를 가져오는 역할을 한다. PostList는 model = Post로 지정되어 있으므로 get_queryset()의 결과는 Post.objects.all()과 동일하다. 이와 다르게 PostSearch는 검색된 결과만 가져와야 하므로 get_queryset()을 오버라이딩 한다.
+        q = self.kwargs['q'] #602. URL을 통해 넘어온 검색어를 받아 q라는 변수에 저장한다.
+        post_list = Post.objects.filter(
+            Q(title__contains=q) | Q(tags__name__contains=q) #603. 여러 쿼리를 동시에 써야할 경우 장고에서 제공하는 Q를 사용한다. 이 내용은, title에 q를 포함했거나, tags의 name에 q를 포함한 Post레코드를 db에서 가져오라는 의미이다. |는 or, &는 and를 뜻한다. 쿼리 조건이기 때문에 title__contains과 같이 밑줄2개로 표현하도록 약속되어 있다. Q를 2째줄에 임포트한다.
+        ).distinct() #604. distinct()는 중복으로 가져온 요소가 있을때 한번만 나타나게 하기 위한 설정이다.
+        return post_list
+
+    def get_context_data(self, **kwargs): #605. 이미 PostSearch의 부모인 PostList에 get_context_data()가 존재하지만 여기에 templates로 몇가지 인자를 추가하기 위해 오버라이딩 한다.
+        context = super(PostSearch, self).get_context_data()
+        q = self.kwargs['q']
+        context['search_info'] = f'Search: {q} ({self.get_queryset().count()})' #606. 테스트코드에서 파이썬 을 검색하면 main_area에 Search:파이썬(2)가 포함되야 하므로 이렇게 입력한다. 이제 post_list.html의 11째줄로 이동한다.
+
+        return context
