@@ -1,17 +1,60 @@
-<!DOCTYPE html> <!-- 24. html파일을 만들고 이와같이 입력한다. -->
-<html lang="en">
+<!DOCTYPE html> <!-- 615. base.html의 2번째 줄의 내용을 가져와서 2번째 줄에 붙인다. -->
+{% load static %}
+<html lang="ko"> <!-- 616. 한국어로 설정변경 -->
 <head>
     <meta charset="UTF-8">
-    <title>신동준입니다.</title>
-</head>
-<body>
-    <nav>
-        <a href="/blog/">Blog</a>
-        <a href="/about_me/">About me</a>
-    </nav>
+    <title>DJ Page</title>
+        <link href="{% static 'blog/bootstrap/bootstrap.min.css' %}" rel="stylesheet" type="text/css"> <!-- 614. base.html의 6과 8줄에 있는 부트스트랩과 폰트어썸을 사용할수 있는 문장을 불러와서 이곳의 6과 7줄에 붙인다. -->
+        <script src="https://kit.fontawesome.com/609924bd8d.js" crossorigin="anonymous"></script> <!-- 614. -->
 
-    <h1>안녕하세요. 신동준입니다. </h1>
-    <h2>대문 페이지</h2>
-    <h3>현재 공사중..</h3>
+        <link href="{% static 'single_pages/css/landing.css' %}" rel="stylesheet" type="text/css"> <!-- 622. 7줄의 내용을 붙여넣고 landing.css를 사용하기 위한 내용을 이와같이 입력한다. 이제 19번째 줄로 이동한다.-->
+</head>
+<body> <!-- 617. 네비게이션 바 사용을 위해 base.html의 11째줄 내용을 이곳의 11째 줄에 붙여넣기하고 12~15의 내용은 필요없으니 삭제한다. -->
+    {% include 'blog/navbar.html' %}
+
+    <section> <!-- 624. 치우쳐 있는 글씨체를 오른쪽으로 옮기기 위해 section과 div의 container로 감싼다. -->
+        <div class="container">
+            <div class="row justify-content-between mt-4"> <!-- 625. justify-content-between를 넣음으로써 왼쪽과 오른쪽 사이가 벌어지는 것이며, 글이 너무 위에 있으므로 margin-top(mt)를 4정도 주어 내비게이션 바와 글씨가 서로 간격이 생기게 한다. -->
+                <div class="col-lg-6 text-light"> <!-- 626. 왼쪽의 6의 지분을 가지고 글씨가 하얀색이 된다.-->
+                    <h1>Challenge!</h1> <!-- 627. 이와같이 글씨를 입력할 수 있다. -->
+                    <p>With the heart that flew around the world!</p>
+                </div>
+                <div class="col-lg-5"> <!-- 628. 왼쪽 바로옆 오른쪽으로 5의 지분을 준다.-->
+                    <h2 class="text-light">Blog - Recent posts</h2> <!-- 629. 가장 최근의 포스트 내용이 오게 설정한다. 이제 single_pages/tests.py로 이동한다. -->
+
+                    {% for post in recent_posts %}
+                    <div class="card mt-1"> <!-- 641. 위(25)와같이 recent_posts에 대한 반복문(25, 39)을 입력한다. -->
+                        <div class="card-body">
+                            <h6><a href="{{ post.get_absolute_url }}" class="text-decoration-none text-dark">{{ post.title }}</a></h6> <!-- 642. 상세페이지의 타이틀이 대문페이지에 나오게 이와같이 입력한다. text-decoration-none text-dark:밑줄 등의 장식을 없애주고 검은글씨가 된다.-->
+
+                            <span class="badge badge-pill badge-light float-right"> <!-- 648. span class="badge badge-pill badge-light: 부트스트랩의 badge의 내용이다. float-right : 대문페이지의 Recent posts의 내용이 약간 오른쪽으로 가게 한다. 그리고 landing.css파일을 열어서 13~15의 내용(대문페이지 posts표시창의 백그라운드 색을 조정)background: rgba(255, 255, 255, 0.75);처럼 입력한다. 0.75의 숫자를 조정해서 투명도를 조정한다. -->
+                                <img class="mr-1 rounded-circle" width="20px" src="{{ post.get_avatar_url }}" alt="{{ post.author }}"> <!-- 647. 상세페이지의 post.get_avatar_url과 post.author를 사용하기 위해 이렇게 입력한다. 그리고 이와같이 모양과 크기를 조정한다.-->
+                                {{ post.author.username }} <!-- 643. 작성자가 나타나게 한다. -->
+                                &nbsp;&nbsp;
+                                {{ post.created_at }} <!-- 644. 작성일이 나타나게 한다. 645. 이제 blog/models.py의 64줄로 이동한다. -->
+                            </span>
+
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+            </div>
+        </div>
+    </section>
+
+
+<!-- 619. footer의 사용을 위해 base.html의 80번째 줄 내용을 17줄에 붙인다. 620. 이제 single_pages안에 static폴더를 만들고 다시 이 안에 single_pages라고 만들고, 이 안에 images 라는 폴더를 만든다. 그리고 이 안에 배경이 될 이미지 파일을 넣는다. 621. 그리고 images폴더가 있는 공간에 css라는 폴더를 만들고 landing.css 파일을 만들고 내용(배경화면에 대한 내용)을 입력한다. 이제 landing.html의 10째 줄로 간다.-->
+<div class="fixed-bottom"> <!-- 623. footer의 내용을 이와같은 내용의 div(19, 21)로 감싼다. -->
+    {% include 'blog/footer.html' %}
+</div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns"
+        crossorigin="anonymous"></script> <!-- 618.자바스크립트의 사용을 위해 base.html의 83~88의 내용을 이곳에(19~24) 복사해서 붙인다. -->
 </body>
 </html><!--25. single_pages/templates폴더를 만들어서 single_pages/single_pages 폴더를 그대로 집어넣고 single_pages/urls.py로 이동한다. -->

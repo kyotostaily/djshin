@@ -61,6 +61,12 @@ class Post(models.Model):
     def get_content_markdown(self): #459. content를 마크다운 형식으로 바꿔주는 함수이며 임포트를 해준다. 이제 post_detail.html의 46째 줄로 간다.
         return markdown(self.content)
 
+    def get_avatar_url(self): #646. 아래 87~91의 내용을 붙여넣는다. 그리고 single_pages의 landing.html의 31째줄로 이동한다.
+        if self.author.socialaccount_set.exists():
+            return self.author.socialaccount_set.first().get_avatar_url()
+        else:
+            return f'https://doitdjango.com/avatar/id/1164/79445086251f6541/svg/{self.author.email}'
+
 
 class Comment(models.Model): #481. 댓글에 관한 내용을 아래와 같이(64~75) 입력한다.
     post = models.ForeignKey(Post, on_delete=models.CASCADE) #482. 어떤 포스트에 대한 댓글인가에 관한 내용(모델이름:Post, on_delete=models.CASCADE: 글이 지워지면 아래 댓글도 다 지워지는 설정)
