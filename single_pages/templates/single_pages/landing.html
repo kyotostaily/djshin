@@ -14,7 +14,7 @@
 
     <section> <!-- 624. 치우쳐 있는 글씨체를 오른쪽으로 옮기기 위해 section과 div의 container로 감싼다. -->
         <div class="container">
-            <div class="row justify-content-between mt-4"> <!-- 625. justify-content-between를 넣음으로써 왼쪽과 오른쪽 사이가 벌어지는 것이며, 글이 너무 위에 있으므로 margin-top(mt)를 4정도 주어 내비게이션 바와 글씨가 서로 간격이 생기게 한다. -->
+            <div class="row justify-content-between mt-4"> <!-- 625. justify-content-between를 넣음(6과 5사이에 1을 비워라는 뜻)으로써 왼쪽과 오른쪽 사이가 벌어지는 것이며, 글이 너무 위에 있으므로 margin-top(mt)를 4정도 주어 내비게이션 바와 글씨가 서로 간격이 생기게 한다. -->
                 <div class="col-lg-6 text-light"> <!-- 626. 왼쪽의 6의 지분을 가지고 글씨가 하얀색이 된다.-->
                     <h1>Challenge!</h1> <!-- 627. 이와같이 글씨를 입력할 수 있다. -->
                     <p>With the heart that flew around the world!</p>
@@ -48,7 +48,7 @@
 
 <!-- 619. footer의 사용을 위해 base.html의 80번째 줄 내용을 17줄에 붙인다. 620. 이제 single_pages안에 static폴더를 만들고 다시 이 안에 single_pages라고 만들고, 이 안에 images 라는 폴더를 만든다. 그리고 이 안에 배경이 될 이미지 파일을 넣는다. 621. 그리고 images폴더가 있는 공간에 css라는 폴더를 만들고 landing.css 파일을 만들고 내용(배경화면에 대한 내용)을 입력한다. 이제 landing.html의 10째 줄로 간다.-->
 <div class="fixed-bottom"> <!-- 623. footer의 내용을 이와같은 내용의 div(19, 21)로 감싼다. -->
-    {% include 'blog/footer.html' %}
+
 </div>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
