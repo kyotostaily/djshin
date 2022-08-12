@@ -1,0 +1,16 @@
+{% extends 'blog/base.html' %} <!-- 694. board의 상세 내용을 이와같이 작성한다. -->
+
+{% block main_area %}
+
+<div class="card"> <!-- 695. bootstarp(4.6)에서 Components -> Card에 가서 양식을 가져온다. 이제 board_list.html의 28째줄로 이동한다.-->
+  <div class="card-body">
+      <h4 class="card-title">{{ board.title }}</h4>
+
+      <p class="float-right">{{ board.created_at }}</p>
+      {{ board.author }}
+      <hr/>
+      {{ board.content }}
+  </div>
+</div>
+
+{% endblock %}

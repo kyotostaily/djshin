@@ -50,6 +50,7 @@ INSTALLED_APPS = [
 
     'blog',
     'single_pages',
+    'board', #672. 게시판을 위해 board를 이와같이 추가하고 makemigrations -> migrate를 진행한다. 이제 board/admin.py으로 이동한다.
 ]
 
 MIDDLEWARE = [

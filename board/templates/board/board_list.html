@@ -1,0 +1,36 @@
+{% extends 'blog/base.html' %} <!-- 679. blog/base.html을 확장하는 문장을 post_list.html의 첫째줄에서 가져와 붙인다. -->
+
+{% block main_area %} <!-- 680. post_list.html의 3째줄에서 가져온다. 마지막에 endblock으로 닫아준다. 이제 board/views.py로 이동한다. -->
+
+<table class="table"> <!-- 682. 게시판 위의 형식 틀을 만들기 위해 bootstrap(4.6버전) -> Content -> Tables 로 가서 양식(5~14)을 복사해서 가져온다.-->
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">제목</th>
+        <th scope="col">작성자</th>
+        <th scope="col">작성일</th>
+    </tr>
+    </thead>
+    <tbody>
+        {% for board in board_list %} <!-- 683. 이제 위의 내용을 사용하도록 for문과 endfor를 입력한다. -->
+        <tr>
+            <th scope="row">{{ board.pk }}</th> <!-- 684. 글 번호 -->
+            <td><a href="{{ board.get_absolute_url }}">{{ board.title }}</a></td> <!-- 685. 제목, #693. a태그로 감싸고 경로를 board.get_absolute_url로 지정해준다. 이제 board/board_detail.html을 만들어준다. -->
+            <td>{{ board.author }}</td> <!-- 686. 작성자 -->
+            <td>{{ board.created_at }}</td> <!-- 687. 작성일. 이제 board/models.py의 17째줄로 이동한다. -->
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<hr/>
+
+{% if request.user.is_authenticated %} <!--696. 로그인한 상태의 유저에게만 글쓰기를 눌렀을때 create로 이동하게 한다. 버튼양식은 부트스트랩(4.6)을 참고한다.-->
+    <a href="/board/create/" type="button" class="btn btn-secondary float-right">글쓰기</a>
+{% else %} <!-- 697. 로그인 안한 상태에서 글쓰기 버튼을 누글 경우 navbar.html의 50줄의 내용을 복사해 붙여넣기 하여 이와같이 변경한 후, 로그인 모달이 나오게 한다. 버튼양식은 부트스트랩(4.6)을 참고한다. 이제 board/urls.py의 5째줄로 이동한다. -->
+    <a type="button" class="btn btn-secondary float-right" href="#" data-toggle="modal" data-target="#loginModal">글쓰기</a>
+{% endif %}
+
+
+
+{% endblock %}
