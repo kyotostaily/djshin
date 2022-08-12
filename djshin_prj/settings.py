@@ -154,3 +154,13 @@ ACCOUNT_EMAIL_VERIFICATION = 'none' #469. 회원가입시 이메일을 보내서
 LOGIN_REDIRECT_URL = '/blog/' #475. 로그인하면 이 페이지로 오게된다. 대문페이지로 설정하고 싶으면 '/'으로 한다. 이제 navbar.html의 34줄로 이동한다.
 
 X_FRAME_OPTIONS = 'SAMEORIGIN' #719. 같은 서버에서는 X FRAME을 사용하게 해 달라는 내용. 이제 board_detail.html의 12째줄로 이동한다.
+
+SUMMERNOTE_THEME = 'bs4'  # Show summernote with Bootstrap4 #721. django-summernote의 themes와 Options에 가서 bootstarap버전에 맞게 이와같이(158~166) 양식을 찾아 붙인다.
+
+SUMMERNOTE_CONFIG = {
+    'summernote': {
+        # Change editor size
+        'width': '100%',
+        'height': '480',
+    }
+}
