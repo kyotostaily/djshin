@@ -30,3 +30,4 @@ urlpatterns = [
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) #83. 이와같이 입력한다.그럼 이미지 저장된거 클릭하면 그림이 나온다. 이후에 blog/post_list.html로 이동한다.
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
