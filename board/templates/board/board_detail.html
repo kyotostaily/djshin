@@ -9,7 +9,7 @@
       <p class="float-right">{{ board.created_at }}</p>
       {{ board.author }}
       <hr/>
-      {{ board.content }}
+      {{ board.content | safe }} <!-- 720. safe를 추가함으로 board의 content를 처리해달라는 내용이다. -->
   </div>
 </div>
 

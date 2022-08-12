@@ -2,6 +2,7 @@ from django.shortcuts import redirect #709
 from django.views.generic import ListView, DetailView, CreateView #677, 691.
 from django.contrib.auth.mixins import LoginRequiredMixin #699.
 from .models import Board #678.
+from .forms import BoardForm #718.
 
 
 class BoardList(ListView): #677. BoardList의 내용을 작성후 ListView를 임포트 해준다. (blog/views.py의 5째줄의 내용을 복사후 붙여넣고 UpdateView는 지운다.)
@@ -15,7 +16,7 @@ class BoardDetail(DetailView): #691. BoardDetail의 내용을 작성후 DetailVi
 
 class BoardCreate(LoginRequiredMixin, CreateView): #699. BoardCreate에 대한 내용을 이와같이 작성한다. LoginRequiredMixin은 로긴한 사람만 와야되니 붙여주고 임포트한다.
     model = Board
-    fields = ['title', 'content'] #700. blog/views.py의 35~36째 줄에서 복사해서 붙여넣고 필드에 타이틀과 내용만 집어넣어준다. 여기서 board/board_form.html파일을 만들고 이동한다.
+    form_class = BoardForm #718. form_class의 내용을 이같이 입력하고 BoardForm을 5째줄에 임포트한다. 이제 settings.py의 156째줄로 이동한다.
 
     def form_valid(self, form): #704. blog/views.py의 41~42의 내용을 복사해서 붙인다.
         current_user = self.request.user
@@ -25,4 +26,4 @@ class BoardCreate(LoginRequiredMixin, CreateView): #699. BoardCreate에 대한 �
 
             return response #708. 60,61,62의 내용을 붙인다.
         else:
-            return redirect('/board/') #709. redirect를 임포트한다.
+            return redirect('/board/') #709. redirect를 임포트한다. #710. 이제 인터넷에서 django-summernote를 검색해서 들어가서 양식에 있는 순서를 따른다. pip install django-summernote -> 이제 settings.py의 50째줄로 이동한다.

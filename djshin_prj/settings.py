@@ -47,6 +47,7 @@ INSTALLED_APPS = [
 
     'crispy_forms', #445. django-crispy-forms의 설치 가이드에 나온대로 이와같이 입력한다. 이제 130줄로 이동한다.
     'markdownx', #454. 이렇게 붙여넣고 djshin_prj/urls.py에 간다.
+    'django_summernote', #711. django-summernote의 메뉴얼대로 붙여넣기 하고 이제djshin_prj/urls.py의 28째줄로 간다.
 
     'blog',
     'single_pages',
@@ -151,3 +152,5 @@ ACCOUNT_EMAIL_REQUIRED = True #468. 이메일 주소를 받아올껀가
 ACCOUNT_EMAIL_VERIFICATION = 'none' #469. 회원가입시 이메일을 보내서 확인하려는것, 지금은 안하므로 none으로 한다. 이제djshin/urls.py의 26째 줄로 이동한다.
 
 LOGIN_REDIRECT_URL = '/blog/' #475. 로그인하면 이 페이지로 오게된다. 대문페이지로 설정하고 싶으면 '/'으로 한다. 이제 navbar.html의 34줄로 이동한다.
+
+X_FRAME_OPTIONS = 'SAMEORIGIN' #719. 같은 서버에서는 X FRAME을 사용하게 해 달라는 내용. 이제 board_detail.html의 12째줄로 이동한다.

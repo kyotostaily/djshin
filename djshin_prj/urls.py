@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls), #1. 관리자 페이지의 url로 가라(기본제공)
     path('markdownx/', include('markdownx.urls')), #455. Markdownx사이트에서 urls.py의 내용을 찾아서 이와같이 복사해서 붙여넣는다. 그리고 이 내용 아래의 Next를 누르면서 다음 페이지로 넘어간다. 이제 models.py의 36째 줄로 넘어간다.
     path('accounts/', include('allauth.urls')), #470. django-allauth에서 복사하여 붙이고 migrate를 한다. 이후 #471. 사이트의 providers로 가서 google을 선택한 후, https://console.developers.google.com/에 들어간다(구글로긴필요). #472. 새 프로젝트 선택 -> 프로젝트 이름 설정 -> 만들기 -> 만들어진 프로젝트에 들어가서 -> Oauth동의화면 -> 외부 클릭 -> 만들기 -> 앱 이름, 사용자지원이메일, 개발자연락처정보 입력(여기선 djshinkyoto@gmail.com) -> 저장 후 계속 -> 사용자 인증 정보 -> Create credentials(사용자 인증 정보 만들기)클릭 -> OAuth클라이언트ID 클릭 -> 애플리케이션 유형 -> 웹 애플리케이션, 이름입력 -> 승인된 자바스크립트 원본 아래 url추가 : http://127.0.0.1:8000 입력 -> 승인된 리디렉션 url -> http://127.0.0.1:8000/accounts/google/login/callback/ 입력 -> 만들기 -> 클라이언트ID및 클라이언트 보안 비밀번호 따로 복사해서 보관 -> admin페이지의 sites에 간다. -> example.com클릭해서 Domain name과 Display name을 127.0.0.1:8000로 바꿔주고 save. 이제 navbar.html의 첫째줄로 이동한다.
+    path('summernote/', include('django_summernote.urls')), #712. django-summernote메뉴얼의 순서에 따라 붙이고 migrate를 한다. 이제 board에 forms.py를 만들고 이동한다.
     path('', include('single_pages.urls')), #20. 아무것도 없을 때('')는 single_pages만 보여주는 것만 남겨놓고 blog.urls에 있는 것을 복사해서 single_pages에 붙여넣는다.
 ]
 
