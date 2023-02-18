@@ -1,4 +1,4 @@
-# Python web project
+# A Python web project
 <dd>제작자 : 신동준</dd><br>
 <dd>이메일 : <a href="kyotostaily@naver.com">kyotostaily@naver.com</a></dd><br>
 <dd>제작기간 : 2022.7.17 ~ 2022.8.12</dd><br>
